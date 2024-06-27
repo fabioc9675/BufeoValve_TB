@@ -61,121 +61,26 @@ void lcd_setup(void)
     lcd.clear();
 }
 
-// Ejecucion de la rutina de refrescamiento del LCD
-void lcdPrintFirstLine(void)
-{
-    // lcd.setCursor(0, 0);
-    // switch (lineaAlerta)
-    // {
-    // case MAIN_MENU:
-    //     if (stateMachine == STANDBY_STATE)
-    //     {
-    //         lcd.print("  Banco de pruebas  ");
-    //     }
-    //     // else
-    //     // {
-    //     //     lcd.print("  GIBIC Neuma ");
-    //     //     if (currentVentilationMode == 0)
-    //     //     {
-    //     //         lcd.print("P-CMV ");
-    //     //     }
-    //     //     else if (currentVentilationMode == 1)
-    //     //     {
-    //     //         lcd.print("A/C   ");
-    //     //     }
-    //     //     else
-    //     //     {
-    //     //         lcd.print("CPAP  ");
-    //     //     }
-    //     // }
-    //     break;
-    // case CONFIG_MENU:
-    //     if (currentVentilationMode == 0)
-    //     {
-    //         lcd.print(" Configuracion P-CMV");
-    //     }
-    //     else if (currentVentilationMode == 1)
-    //     {
-    //         lcd.print("  Configuracion A/C ");
-    //     }
-    //     else
-    //     {
-    //         lcd.print(" Configuracion CPAP ");
-    //     }
-    //     break;
-    // case CONFIG_ALARM:
-    //     lcd.print("      Alarmas       ");
-    //     break;
-    // case VENT_MENU:
-    //     lcd.print(" Modo Ventilatorio  ");
-    //     if (insideMenuFlag == true && optionVentMenu == 0)
-    //     {
-    //         lcd.setCursor(0, 0);
-    //         lcd.write(126);
-    //     }
-    //     break;
-    // case SERVICE_MENU:
-    //     lcd.print("  Chequeo de fugas  ");
-    //     break;
-    // case ALE_PRES_PIP:
-    //     lcd.print("Presion PIP elevada ");
-    //     break;
-    // case ALE_PRES_DES:
-    //     lcd.print("Desconexion Paciente");
-    //     break;
-    // case ALE_OBSTRUCCION:
-    //     lcd.print("    Obstruccion     ");
-    //     break;
-    // case ALE_GENERAL:
-    //     lcd.print("   Fallo general   ");
-    //     break;
-    // case ALE_PRES_PEEP:
-    //     lcd.print("  Perdida de PEEP   ");
-    //     break;
-    // case BATTERY:
-    //     lcd.print(" Fallo red electrica");
-    //     break;
-    // case ALE_BATTERY_10MIN:
-    //     lcd.print("Bateria baja 10 Min");
-    //     break;
-    // case ALE_BATTERY_5MIN:
-    //     lcd.print(" Bateria baja 5 Min ");
-    //     break;
-    // case ALE_FR_ALTA:
-    //     lcd.print("      FR alta       ");
-    //     break;
-    // case ALE_VE_ALTO:
-    //     lcd.print("    Vol/min alto    ");
-    //     break;
-    // case ALE_APNEA:
-    //     lcd.print("       Apnea        ");
-    //     break;
-    // case CHECK_MENU:
-    //     lcd.print("Comprobacion Inicial");
-    //     break;
-    // case CONFIRM_MENU:
-    //     lcd.print(" Confirmar cambios  ");
-    //     break;
-    // case CPAP_MENU:
-    //     lcd.print(" Configuracion CPAP ");
-    //     break;
-    // default:
-    //     break;
-    // }
-}
-
 /* ***************************************************************************
  * **** Ejecucion de la rutina de refrescado de Display ++********************
  * ***************************************************************************/
 void task_display(void *pvParameters)
 {
-    String taskMessage = "LCD Task running on core ";
-    taskMessage = taskMessage + xPortGetCoreID();
+    String taskMessage = "   BUFEO TestBench  ";
+    // taskMessage = taskMessage + xPortGetCoreID();
     // Serial.println(taskMessage);
 
     lcd_setup(); // inicializacion de LCD
     lcd.setCursor(0, 0);
     lcd.print(taskMessage);
+
+    // impresion de interface
+    lcd.setCursor(0, 1);
+    lcd.print("SEAL:     |CUR:     ");
+    lcd.setCursor(0, 2);
+    lcd.print("PRES:     |RES:     ");
+    lcd.setCursor(0, 3);
+    lcd.print("PRUEBA:             ");
 
     while (true)
     {
@@ -186,9 +91,80 @@ void task_display(void *pvParameters)
         if (flagAlreadyPrint == false)
         {
             flagAlreadyPrint = true;
-            lcd.setCursor(1, 1);
+            // Evaluacion del estado del test de estanquedad
+            if (flagEstanTest == false)
+            {
+                flagEstanTest = true;
+                lcd.setCursor(5, 1);
+                switch (estan_test)
+                {
+                case WAIT_TEST:
+                    lcd.print("WAIT");
+                    break;
+                case FAIL_TEST:
+                    lcd.print("FAIL");
+                    break;
+                case BUSY_TEST:
+                    lcd.print("BUSY");
+                    break;
+                case PASS_TEST:
+                    lcd.print("PASS");
+                    break;
+                default:
+                    break;
+                }
+            }
+
+            // Evaluacion del estado del test de presion
+            if (flagPresiTest == false)
+            {
+                flagPresiTest = true;
+                lcd.setCursor(5, 2);
+                switch (presi_test)
+                {
+                case WAIT_TEST:
+                    lcd.print("WAIT");
+                    break;
+                case FAIL_TEST:
+                    lcd.print("FAIL");
+                    break;
+                case BUSY_TEST:
+                    lcd.print("BUSY");
+                    break;
+                case PASS_TEST:
+                    lcd.print("PASS");
+                    break;
+                default:
+                    break;
+                }
+            }
+
+            // Evaluacion del estado del test de corriente
+            if (flagCorriTest == false)
+            {
+                flagCorriTest = true;
+                lcd.setCursor(15, 1);
+                switch (corri_test)
+                {
+                case WAIT_TEST:
+                    lcd.print("WAIT");
+                    break;
+                case FAIL_TEST:
+                    lcd.print("FAIL");
+                    break;
+                case BUSY_TEST:
+                    lcd.print("BUSY");
+                    break;
+                case PASS_TEST:
+                    lcd.print("PASS");
+                    break;
+                default:
+                    break;
+                }
+            }
+
+            lcd.setCursor(8, 3);
             lcd.print(stateString);
-            Serial.println(stateString);
         }
 
         vTaskDelay(100 / portTICK_PERIOD_MS);

@@ -31,6 +31,8 @@ extern unsigned int contAction;
 // Variables para imprimir en pantalla
 extern String stateString;
 extern volatile uint8_t flagAlreadyPrint;
+extern volatile uint8_t fl_toggle;
+extern volatile uint8_t fl_buzzer;
 
 // Variables para menu actualizado
 extern float estanquedad;
@@ -77,6 +79,7 @@ void actionInterruptAttention(void)
             portENTER_CRITICAL(&mux);
             attachInterrupt(digitalPinToInterrupt(ACTION_BTN), actionButtonInterrupt, FALLING);
             flagActionInterrupt = false;
+            fl_buzzer = true;
             portEXIT_CRITICAL(&mux);
             contAction = 0;
 
@@ -88,7 +91,7 @@ void actionInterruptAttention(void)
 
             stateMachine = SEAL_TEST;
             flagAlreadyPrint = false;
-            stateString = "SEAL TEST";
+            stateString = "Seal test";
 
             // Envio de datos hacia el micro control
             sendSerialData();
@@ -103,38 +106,87 @@ void actionInterruptAttention(void)
                 portENTER_CRITICAL_ISR(&mux);
                 attachInterrupt(digitalPinToInterrupt(ACTION_BTN), actionButtonInterrupt, FALLING);
                 flagActionInterrupt = false;
+                fl_buzzer = true;
                 portEXIT_CRITICAL_ISR(&mux);
 
                 switch (stateMachine)
                 {
                 case SEAL_TEST:
-                    stateMachine = PRES_TEST;
+                    if (estan_test == PASS_TEST && presi_test == PASS_TEST && corri_test == PASS_TEST)
+                    {
+                        stateMachine = ENDO_TEST;
+                        stateString = "Fin  test";
+                    }
+                    else
+                    {
+                        if (presi_test != PASS_TEST)
+                        {
+                            stateMachine = PRES_TEST;
+                            stateString = "Pres test";
+                        }
+                        else if (corri_test != PASS_TEST)
+                        {
+                            stateMachine = CURR_TEST;
+                            stateString = "Curr test";
+                        }
+                    }
                     flagAlreadyPrint = false;
-                    stateString = "PRES TEST";
                     break;
 
                 case PRES_TEST:
-                    stateMachine = CURR_TEST;
+                    if (estan_test == PASS_TEST && presi_test == PASS_TEST && corri_test == PASS_TEST)
+                    {
+                        stateMachine = ENDO_TEST;
+                        stateString = "Fin  test";
+                    }
+                    else
+                    {
+                        if (corri_test != PASS_TEST)
+                        {
+                            stateMachine = CURR_TEST;
+                            stateString = "Curr test";
+                        }
+                        else if (estan_test != PASS_TEST)
+                        {
+                            stateMachine = SEAL_TEST;
+                            stateString = "Seal test";
+                        }
+                    }
                     flagAlreadyPrint = false;
-                    stateString = "CURR TEST";
                     break;
 
                 case CURR_TEST:
-                    stateMachine = SEAL_TEST;
+                    if (estan_test == PASS_TEST && presi_test == PASS_TEST && corri_test == PASS_TEST)
+                    {
+                        stateMachine = ENDO_TEST;
+                        stateString = "Fin  test";
+                    }
+                    else
+                    {
+                        if (estan_test != PASS_TEST)
+                        {
+                            stateMachine = SEAL_TEST;
+                            stateString = "Seal test";
+                        }
+                        else if (presi_test != PASS_TEST)
+                        {
+                            stateMachine = PRES_TEST;
+                            stateString = "Pres test";
+                        }
+                    }
                     flagAlreadyPrint = false;
-                    stateString = "SEAL TEST";
                     break;
 
                 case ENDO_TEST:
                     stateMachine = MAIN_MENU;
                     flagAlreadyPrint = false;
-                    stateString = "MAIN MENU";
+                    stateString = "Main menu";
                     break;
 
                 default:
                     stateMachine = MAIN_MENU;
                     flagAlreadyPrint = false;
-                    stateString = "MAIN MENU";
+                    stateString = "Main menu";
                     break;
                 }
 
@@ -150,13 +202,14 @@ void actionInterruptAttention(void)
                 portENTER_CRITICAL_ISR(&mux);
                 attachInterrupt(digitalPinToInterrupt(ACTION_BTN), actionButtonInterrupt, FALLING);
                 flagActionInterrupt = false;
+                fl_buzzer = true;
                 portEXIT_CRITICAL_ISR(&mux);
 
                 // if (stateMachine == SEAL_TEST || stateMachine == PRES_TEST || stateMachine == CURR_TEST)
                 // {
                 stateMachine = ENDO_TEST;
                 flagAlreadyPrint = false;
-                stateString = "FIN  TEST";
+                stateString = "Fin  test";
                 // }
                 // else if (stateMachine == ENDO_TEST)
                 // {
@@ -181,37 +234,66 @@ void task_Indicators(void *pvParameters)
 
     while (true)
     {
-        switch (stateMachine)
+        // Evaluacion de estados de las pruebas
+        if (estan_test == WAIT_TEST && presi_test == WAIT_TEST && corri_test == WAIT_TEST)
         {
-        case SEAL_TEST:
-            stateMachine = PRES_TEST;
-            flagAlreadyPrint = false;
-            stateString = "PRES TEST";
-            break;
+            digitalWrite(LUMINB, LOW);
+            digitalWrite(LUMING, LOW);
+            digitalWrite(LUMINR, LOW);
+        }
+        else if (estan_test == FAIL_TEST || presi_test == FAIL_TEST || corri_test == FAIL_TEST)
+        {
+            // digitalWrite(LUMINB, LOW);
+            digitalWrite(LUMINR, HIGH);
+            digitalWrite(LUMING, LOW);
+        }
+        else if (estan_test == PASS_TEST && presi_test == PASS_TEST && corri_test == PASS_TEST)
+        {
+            digitalWrite(LUMINB, LOW);
+            digitalWrite(LUMINR, LOW);
+            digitalWrite(LUMING, HIGH);
+        }
+        else if (estan_test != FAIL_TEST || presi_test != FAIL_TEST || corri_test != FAIL_TEST)
+        {
+            // digitalWrite(LUMINB, LOW);
+            digitalWrite(LUMINR, LOW);
+            // digitalWrite(LUMING, LOW);
+        }
 
-        case PRES_TEST:
-            stateMachine = CURR_TEST;
-            flagAlreadyPrint = false;
-            stateString = "CURR TEST";
-            break;
+        // evaluacion del tipo de prueba
+        if (!(stateMachine == MAIN_MENU || stateMachine == ENDO_TEST))
+        {
+            if (fl_toggle)
+            {
+                fl_toggle = false;
+                digitalWrite(ACTION_LED, !digitalRead(ACTION_LED));
+                if (estan_test == BUSY_TEST || presi_test == BUSY_TEST || corri_test == BUSY_TEST)
+                {
+                    digitalWrite(LUMINB, digitalRead(ACTION_LED));
+                    digitalWrite(LUMING, LOW);
+                }
+            }
+        }
+        else
+        {
+            digitalWrite(ACTION_LED, HIGH);
+        }
 
-        case CURR_TEST:
-            stateMachine = SEAL_TEST;
-            flagAlreadyPrint = false;
-            stateString = "SEAL TEST";
-            break;
+        // vTaskDelay(100/portTICK_PERIOD_MS);
+    }
+}
 
-        case ENDO_TEST:
-            stateMachine = MAIN_MENU;
-            flagAlreadyPrint = false;
-            stateString = "MAIN MENU";
-            break;
-
-        default:
-            stateMachine = MAIN_MENU;
-            flagAlreadyPrint = false;
-            stateString = "MAIN MENU";
-            break;
+void task_Buzzer(void *pvParameters)
+{
+    digitalWrite(BUZZER_PIN, LOW);
+    while (true)
+    {
+        if (fl_buzzer == true)
+        {
+            fl_buzzer = false;
+            digitalWrite(BUZZER_PIN, HIGH);
+            vTaskDelay(50 / portTICK_PERIOD_MS);
+            digitalWrite(BUZZER_PIN, LOW);
         }
     }
 }

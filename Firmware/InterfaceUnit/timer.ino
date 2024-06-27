@@ -26,6 +26,7 @@ extern byte stateMachine;
 // banderas de botones de usuario
 extern volatile uint8_t flagActionInterrupt;
 extern volatile uint8_t flagTimerInterrupt;
+extern volatile uint8_t fl_toggle;
 
 // banderas para evaluacon de estados
 extern volatile uint8_t flagTest;
@@ -95,6 +96,7 @@ void task_timer(void *arg)
                 contms++;
                 if (contms % 250 == 0)
                 {
+                    fl_toggle = true;
                     // digitalWrite(LUMINR, !digitalRead(LUMINR));
                 }
                 if (contms == 1000)
@@ -105,72 +107,12 @@ void task_timer(void *arg)
                     // Serial.print("Core ");
                     // Serial.println(xPortGetCoreID());
                 }
-                /****************************************************************************
-                ****  En esta seccion del codigo se agregan de nuevo las interrupciones  ****
-                ****************************************************************************/
-                // if (insideMenuFlag)
-                // { // si esta configurando un parametro
-                //     debounceENC = DEBOUNCE_ENC;
-                //     debounceENC_2 = DEBOUNCE_ENC_2;
-                // }
-                // else
-                // {
-                //     debounceENC = DEBOUNCE_ENC_OUT;
-                //     debounceENC_2 = DEBOUNCE_ENC_OUT_2;
-                // }
-
-                // // Agregar interrupcion A
-                // if ((flagDetachInterrupt_A == true) || (flagDetachInterrupt_B_A == true))
-                // {
-                //     contDetachA++;
-                //     if ((contDetachA >= debounceENC) && (flagDetachInterrupt_A == true))
-                //     {
-                //         contDetachA = 0;
-                //         flagDetachInterrupt_A = false;
-                //         attachInterrupt(digitalPinToInterrupt(A), encoderInterrupt_A, FALLING);
-                //     }
-                //     if ((contDetachA >= debounceENC_2) && (flagDetachInterrupt_B_A == true))
-                //     {
-                //         contDetachB = 0;
-                //         flagDetachInterrupt_B_A = false;
-                //         attachInterrupt(digitalPinToInterrupt(B), encoderInterrupt_B, FALLING);
-                //     }
-                // }
-                // // Agregar interrupcion B
-                // if ((flagDetachInterrupt_B == true) || (flagDetachInterrupt_A_B == true))
-                // {
-                //     contDetachB++;
-                //     if ((contDetachB >= debounceENC) && (flagDetachInterrupt_B == true))
-                //     {
-                //         contDetachB = 0;
-                //         flagDetachInterrupt_B = false;
-                //         attachInterrupt(digitalPinToInterrupt(B), encoderInterrupt_B, FALLING);
-                //     }
-                //     if ((contDetachB >= debounceENC_2) && (flagDetachInterrupt_A_B == true))
-                //     {
-                //         contDetachB = 0;
-                //         flagDetachInterrupt_A_B = false;
-                //         attachInterrupt(digitalPinToInterrupt(A), encoderInterrupt_A, FALLING);
-                //     }
-                // }
-                // // Agregar interrupcion S
-                // if (flagDetachInterrupt_S == true)
-                // {
-                //     contDetachS++;
-                //     if (contDetachS >= DEBOUNCE_ENC_SW)
-                //     {
-                //         contDetachS = 0;
-                //         flagDetachInterrupt_S = false;
-                //         attachInterrupt(digitalPinToInterrupt(SW), swInterrupt, FALLING);
-                //     }
-                // } // Finaliza agregar interrupciones
 
                 if (flagActionInterrupt == true)
                 {
                     contAction++;
                     if (contAction > 400)
                     {
-
                         actionInterruptAttention();
                     }
                 }

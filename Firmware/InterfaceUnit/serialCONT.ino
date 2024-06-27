@@ -32,6 +32,7 @@ extern volatile uint8_t flagCorriTest;
 
 // Variables para iniciar impresion de datos en menu
 extern volatile uint8_t flagAlreadyPrint;
+extern volatile uint8_t fl_buzzer;
 
 // Variables para menu actualizado
 extern float estanquedad;
@@ -78,12 +79,12 @@ void task_Receive(void *pvParameters)
 
     while (1)
     {
-        // if (Serial2.available() > 5) {
-        if (Serial.available() > 5)
-        { // solo para pruebas
+        if (Serial2.available() > 5)
+        {
+            // if (Serial.available() > 5) { // solo para pruebas
 
-            // String dataIn = Serial2.readStringUntil(';');
-            String dataIn = Serial.readStringUntil(';'); // solo para pruebas
+            String dataIn = Serial2.readStringUntil(';');
+            // String dataIn = Serial.readStringUntil(';'); // solo para pruebas
             int contComas = 0;
             for (int i = 0; i < dataIn.length(); i++)
             {
@@ -131,23 +132,26 @@ void task_Receive(void *pvParameters)
             if (estan_test != new_estan_test)
             {
                 estan_test = new_estan_test;
-                flagEstanTest = true;
+                flagEstanTest = false;
                 flagAlreadyPrint = false;
+                fl_buzzer = true;
             }
             if (presi_test != new_presi_test)
             {
                 presi_test = new_presi_test;
-                flagPresiTest = true;
+                flagPresiTest = false;
                 flagAlreadyPrint = false;
+                fl_buzzer = true;
             }
             if (corri_test != new_corri_test)
             {
                 corri_test = new_corri_test;
-                flagCorriTest = true;
+                flagCorriTest = false;
                 flagAlreadyPrint = false;
+                fl_buzzer = true;
             }
-            // Serial2.flush();
-            Serial.flush(); // solo para pruebas
+            Serial2.flush();
+            // Serial.flush(); // solo para pruebas
         }
         vTaskDelay(10 / portTICK_PERIOD_MS);
     }

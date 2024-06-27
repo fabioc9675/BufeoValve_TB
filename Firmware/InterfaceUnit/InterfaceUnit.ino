@@ -49,6 +49,8 @@ SemaphoreHandle_t xSemaphoreTimer = NULL;
 
 // banderas de botones de usuario
 volatile uint8_t flagActionInterrupt = false; // inicia en modo standby
+volatile uint8_t fl_toggle = false;
+volatile uint8_t fl_buzzer = false;
 
 // bandera de activacion de timer
 volatile uint8_t flagTimerInterrupt = false;
@@ -108,6 +110,8 @@ void setup()
 	xTaskCreatePinnedToCore(task_timer, "task_timer", 2048, NULL, 2, NULL, taskCoreOne);
 	xTaskCreatePinnedToCore(task_display, "task_display", 2048, NULL, 3, NULL, taskCoreOne); // se puede colocar en el core cero
 	xTaskCreatePinnedToCore(task_Receive, "task_Receive", 2048, NULL, 1, NULL, taskCoreOne);
+	xTaskCreatePinnedToCore(task_Indicators, "task_Indicators", 2048, NULL, 1, NULL, taskCoreOne);
+	xTaskCreatePinnedToCore(task_Buzzer, "task_Buzzer", 2048, NULL, 1, NULL, taskCoreOne);
 
 	// Clean Serial buffers
 	vTaskDelay(1000 / portTICK_PERIOD_MS);
