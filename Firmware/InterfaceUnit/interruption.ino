@@ -32,6 +32,23 @@ extern unsigned int contAction;
 extern String stateString;
 extern volatile uint8_t flagAlreadyPrint;
 
+// Variables para menu actualizado
+extern float estanquedad;
+extern float presion;
+extern float corriente;
+extern int estan_test;
+extern int presi_test;
+extern int corri_test;
+
+// banderas de cambio de valores
+extern volatile uint8_t flagTest;
+extern volatile uint8_t flagEstanquedad;
+extern volatile uint8_t flagPresion;
+extern volatile uint8_t flagCorriente;
+extern volatile uint8_t flagEstanTest;
+extern volatile uint8_t flagPresiTest;
+extern volatile uint8_t flagCorriTest;
+
 /** ****************************************************************************
  ** ************ VARIABLES *****************************************************
  ** ****************************************************************************/
@@ -55,7 +72,7 @@ void actionInterruptAttention(void)
     if (flagActionInterrupt)
     {
         contAction++;
-        if (stateMachine == MAIN_MENU && contAction > 500 && digitalRead(ACTION_BTN) == 0)
+        if (stateMachine == MAIN_MENU && contAction > 500 && digitalRead(ACTION_BTN) == 1)
         {
             portENTER_CRITICAL(&mux);
             attachInterrupt(digitalPinToInterrupt(ACTION_BTN), actionButtonInterrupt, FALLING);
@@ -65,7 +82,7 @@ void actionInterruptAttention(void)
 
             Serial.println("ACT Interrupt main");
             // Serial.println("I am on Cycling state");
-            digitalWrite(ACTION_LED, LOW);
+            // digitalWrite(ACTION_LED, LOW);
 
             // sendSerialData();
 
@@ -73,12 +90,14 @@ void actionInterruptAttention(void)
             flagAlreadyPrint = false;
             stateString = "SEAL TEST";
 
-            Serial.println(stateString);
+            // Envio de datos hacia el micro control
+            sendSerialData();
+            debugText(stateString);
         }
         else if (stateMachine != MAIN_MENU)
         {
             // Serial.println(digitalRead(STANDBY));
-            if (contAction < 3000 && digitalRead(ACTION_BTN) == 1)
+            if (contAction > 500 && contAction < 3000 && digitalRead(ACTION_BTN) == 1)
             {
                 contAction = 0;
                 portENTER_CRITICAL_ISR(&mux);
@@ -106,33 +125,93 @@ void actionInterruptAttention(void)
                     stateString = "SEAL TEST";
                     break;
 
+                case ENDO_TEST:
+                    stateMachine = MAIN_MENU;
+                    flagAlreadyPrint = false;
+                    stateString = "MAIN MENU";
+                    break;
+
                 default:
                     stateMachine = MAIN_MENU;
                     flagAlreadyPrint = false;
                     stateString = "MAIN MENU";
                     break;
                 }
-                Serial.println(stateString);
+
+                // Envio de datos hacia el micro control
+                sendSerialData();
+                debugText(stateString);
             }
             else if (contAction > 3000)
             {
                 contAction = 0;
                 stateMachine = MAIN_MENU;
-                digitalWrite(ACTION_LED, HIGH);
+                // digitalWrite(ACTION_LED, HIGH);
                 portENTER_CRITICAL_ISR(&mux);
                 attachInterrupt(digitalPinToInterrupt(ACTION_BTN), actionButtonInterrupt, FALLING);
                 flagActionInterrupt = false;
                 portEXIT_CRITICAL_ISR(&mux);
 
-                stateMachine = MAIN_MENU;
+                // if (stateMachine == SEAL_TEST || stateMachine == PRES_TEST || stateMachine == CURR_TEST)
+                // {
+                stateMachine = ENDO_TEST;
                 flagAlreadyPrint = false;
-                stateString = "MAIN MENU";
+                stateString = "FIN  TEST";
+                // }
+                // else if (stateMachine == ENDO_TEST)
+                // {
+                //     stateMachine = MAIN_MENU;
+                //     flagAlreadyPrint = false;
+                //     stateString = "MAIN MENU";
+                // }
 
-                Serial.println(stateString);
-
-                // sendSerialData();
-                // Serial.println("I am on Standby state");
+                // Envio de datos hacia el micro control
+                sendSerialData();
+                debugText(stateString);
             }
+        }
+    }
+}
+
+/* ***************************************************************************
+ * **** Ejecucion de la rutina de control de LEDs ****************************
+ * ***************************************************************************/
+void task_Indicators(void *pvParameters)
+{
+
+    while (true)
+    {
+        switch (stateMachine)
+        {
+        case SEAL_TEST:
+            stateMachine = PRES_TEST;
+            flagAlreadyPrint = false;
+            stateString = "PRES TEST";
+            break;
+
+        case PRES_TEST:
+            stateMachine = CURR_TEST;
+            flagAlreadyPrint = false;
+            stateString = "CURR TEST";
+            break;
+
+        case CURR_TEST:
+            stateMachine = SEAL_TEST;
+            flagAlreadyPrint = false;
+            stateString = "SEAL TEST";
+            break;
+
+        case ENDO_TEST:
+            stateMachine = MAIN_MENU;
+            flagAlreadyPrint = false;
+            stateString = "MAIN MENU";
+            break;
+
+        default:
+            stateMachine = MAIN_MENU;
+            flagAlreadyPrint = false;
+            stateString = "MAIN MENU";
+            break;
         }
     }
 }

@@ -1,12 +1,12 @@
 /*
- * File:   interruption.h
+ * File:   serialCONT.h
  * Author: GIBIC UdeA
  *
- * Created on June 26, 2024, 13:41 PM
+ * Created on July 4, 2020, 13:41 PM
  */
 
-#ifndef INTERRUPTION_H
-#define INTERRUPTION_H
+#ifndef SERIALCONT_H
+#define SERIALCONT_H
 
 #ifdef __cplusplus
 extern "C"
@@ -21,8 +21,6 @@ extern "C"
 #include <nvs_flash.h>
 
 #include "initializer.h"
-#include "timer.h"
-#include "serialCONT.h"
 
     /** ****************************************************************************
      ** ************ DEFINES *******************************************************
@@ -35,16 +33,13 @@ extern "C"
     /** ****************************************************************************
      ** ************ FUNCTIONS *****************************************************
      ** ****************************************************************************/
-    void IRAM_ATTR actionButtonInterrupt(void); // Interrupcion por boton accion
-
-    // void silenceInterruptAttention(void);   // Atencion a interrupcion por boton de silencio
-    // void standbyInterruptAttention(void);   // Atencion a interrupcion por boton de standby
-    void actionInterruptAttention(void); // Atencion a interrupcion por boton de stability
+    void sendSerialData(void);  // envio de datos por serial para configuracion
+    void debugText(String msg); // envio de datos por serial para Debug
 
     /* ***************************************************************************
-     * **** Ejecucion de la rutina de control de LEDs ****************************
+     * **** Ejecucion de la rutina de comunicacion por serial ********************
      * ***************************************************************************/
-    void task_Indicators(void *pvParameters);
+    void task_Receive(void *pvParameters);
 
     /* *****************************************************************************
      * *****************************************************************************
@@ -62,4 +57,4 @@ extern "C"
 }
 #endif
 
-#endif /* INTERRUPTION_H */
+#endif /* SERIALCONT_H */

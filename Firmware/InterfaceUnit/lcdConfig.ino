@@ -26,9 +26,20 @@ extern volatile uint8_t flagAlreadyPrint;
 
 // banderas de cambio de valores
 extern volatile uint8_t flagTest;
-extern volatile uint8_t flagEtanquedad;
+extern volatile uint8_t flagEstanquedad;
 extern volatile uint8_t flagPresion;
 extern volatile uint8_t flagCorriente;
+extern volatile uint8_t flagEstanTest;
+extern volatile uint8_t flagPresiTest;
+extern volatile uint8_t flagCorriTest;
+
+// Variables para menu actualizado
+extern float estanquedad;
+extern float presion;
+extern float corriente;
+extern int estan_test;
+extern int presi_test;
+extern int corri_test;
 
 // variables de estado de ventilacion
 extern byte stateMachine;
@@ -171,37 +182,13 @@ void task_display(void *pvParameters)
         /* ****************************************************************
          * **** Actualizacion de valores en pantalla LCD ******************
          * ***************************************************************/
-        // if (flagService == false)
-        // {
-        // if ((menuAnterior != menuImprimir) && (flagAlreadyPrint == false))
-        // {
-        //     lcd.clear();
-        //     lineaAnterior = MODE_CHANGE;
-        // lcd_show_comp();
-        // }
-        // else
-        // {
-        //     lcd_show_part();
-        // }
-        // }
-        // delay de 100 ms en la escritura del LCD
-
-        // lcd.setCursor(2, 3);
-        // lcd.blink_on();
-        // vTaskDelay(1000 / portTICK_PERIOD_MS);
-        // lcd.blink_off();
-        // vTaskDelay(2000 / portTICK_PERIOD_MS);
-        digitalWrite(LUMING, !digitalRead(LUMING));
 
         if (flagAlreadyPrint == false)
         {
-            digitalWrite(LUMINB, HIGH);
             flagAlreadyPrint = true;
             lcd.setCursor(1, 1);
             lcd.print(stateString);
             Serial.println(stateString);
-            vTaskDelay(500 / portTICK_PERIOD_MS);
-            digitalWrite(LUMINB, LOW);
         }
 
         vTaskDelay(100 / portTICK_PERIOD_MS);

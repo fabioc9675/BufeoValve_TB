@@ -55,6 +55,13 @@ extern "C"
 #define SEAL_TEST 1 // Definicion de seal test
 #define PRES_TEST 2 // Definicion de pres test
 #define CURR_TEST 3 // Definicion de curr test
+#define ENDO_TEST 4 // Definicion de finalizacion de test
+
+// Definiciones de los resultados de la prueba
+#define WAIT_TEST 0 // Estado de espera de test
+#define FAIL_TEST 1 // Estado de falla de test
+#define BUSY_TEST 2 // Estado de ocupado de test
+#define PASS_TEST 3 // Estado de pasa de test
 
     /** ****************************************************************************
      ** ************ VARIABLES *****************************************************

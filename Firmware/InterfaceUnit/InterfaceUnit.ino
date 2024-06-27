@@ -55,13 +55,19 @@ volatile uint8_t flagTimerInterrupt = false;
 
 // banderas de cambio de valores
 volatile uint8_t flagTest = false;
-volatile uint8_t flagEtanquedad = false;
+volatile uint8_t flagEstanquedad = false;
 volatile uint8_t flagPresion = false;
 volatile uint8_t flagCorriente = false;
+volatile uint8_t flagEstanTest = false;
+volatile uint8_t flagPresiTest = false;
+volatile uint8_t flagCorriTest = false;
 
 float estanquedad = 0;
 float presion = 0;
 float corriente = 0;
+int estan_test = WAIT_TEST;
+int presi_test = WAIT_TEST;
+int corri_test = WAIT_TEST;
 
 // Variable de la maquina de estados
 byte stateMachine = MAIN_MENU;
@@ -101,7 +107,7 @@ void setup()
 
 	xTaskCreatePinnedToCore(task_timer, "task_timer", 2048, NULL, 2, NULL, taskCoreOne);
 	xTaskCreatePinnedToCore(task_display, "task_display", 2048, NULL, 3, NULL, taskCoreOne); // se puede colocar en el core cero
-	// xTaskCreatePinnedToCore(task_Receive, "task_Receive", 2048, NULL, 1, NULL, taskCoreOne);
+	xTaskCreatePinnedToCore(task_Receive, "task_Receive", 2048, NULL, 1, NULL, taskCoreOne);
 
 	// Clean Serial buffers
 	vTaskDelay(1000 / portTICK_PERIOD_MS);

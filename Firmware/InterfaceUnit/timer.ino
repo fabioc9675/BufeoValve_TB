@@ -27,6 +27,15 @@ extern byte stateMachine;
 extern volatile uint8_t flagActionInterrupt;
 extern volatile uint8_t flagTimerInterrupt;
 
+// banderas para evaluacon de estados
+extern volatile uint8_t flagTest;
+extern volatile uint8_t flagEstanquedad;
+extern volatile uint8_t flagPresion;
+extern volatile uint8_t flagCorriente;
+extern volatile uint8_t flagEstanTest;
+extern volatile uint8_t flagPresiTest;
+extern volatile uint8_t flagCorriTest;
+
 /** ****************************************************************************
  ** ************ VARIABLES *****************************************************
  ** ****************************************************************************/
@@ -86,7 +95,7 @@ void task_timer(void *arg)
                 contms++;
                 if (contms % 250 == 0)
                 {
-                    digitalWrite(LUMINR, !digitalRead(LUMINR));
+                    // digitalWrite(LUMINR, !digitalRead(LUMINR));
                 }
                 if (contms == 1000)
                 {
@@ -159,7 +168,7 @@ void task_timer(void *arg)
                 if (flagActionInterrupt == true)
                 {
                     contAction++;
-                    if (contAction > 200)
+                    if (contAction > 400)
                     {
 
                         actionInterruptAttention();
