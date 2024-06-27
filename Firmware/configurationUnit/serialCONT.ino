@@ -56,7 +56,7 @@ extern byte maxPresion;
 extern byte maxFR;
 extern byte maxVE;
 
-extern byte batteryAlert;
+// extern byte batteryAlert;
 
 // Variables calculadas
 extern byte frecRespiratoriaCalculada;
@@ -120,13 +120,13 @@ void sendSerialData(void)
         E = 1;
     }
     String dataToSend = String(currentFrecRespiratoria) + ',' + String(I) + ',' +
-                        String(E) + ',' + String(maxPresion) + ',' + String(batteryAlert) + ',' +
+                        String(E) + ',' + String(maxPresion) + ',' + // String(batteryAlert) + ',' +
                         String(flagStabilityInterrupt) + ',' + String(stateMachine) + ',' +
                         String(currentVentilationMode) + ',' + String(trigger) + ',' +
                         String(PeepMax) + ',' + String(maxFR) + ',' + String(maxVE) + ',' +
                         String(apneaTime) + ';';
     Serial2.print(dataToSend);
-    //Serial.println(stateMachine);
+    // Serial.println(stateMachine);
 }
 
 /* ***************************************************************************
@@ -162,10 +162,10 @@ void task_Receive(void *pvParameters)
                 dataIn2[i] = dataIn.substring(0, dataIn.indexOf(','));
                 dataIn = dataIn.substring(dataIn.indexOf(',') + 1);
             }
-            //cargue los datos aqui
-            //para entero
-            //contCiclos =dataIn2[0].toInt();
-            //para float
+            // cargue los datos aqui
+            // para entero
+            // contCiclos =dataIn2[0].toInt();
+            // para float
             Ppico = dataIn2[0].toFloat();
             Peep = dataIn2[1].toFloat();
             Pcon = Ppico - Peep;
@@ -184,7 +184,7 @@ void task_Receive(void *pvParameters)
             presPac = dataIn2[14].toInt();
             flowPac = dataIn2[15].toInt();
             Serial2.flush();
-            //Serial.flush();  // solo para pruebas
+            // Serial.flush();  // solo para pruebas
         }
         vTaskDelay(10 / portTICK_PERIOD_MS);
     }

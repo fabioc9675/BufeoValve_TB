@@ -18,8 +18,8 @@ extern "C"
   // #include <string.h>
 
   /** ****************************************************************************
- ** ************ INCLUDES ******************************************************
- ** ****************************************************************************/
+   ** ************ INCLUDES ******************************************************
+   ** ****************************************************************************/
 #include <Arduino.h>
 #include <Esp.h>
 #include <nvs_flash.h>
@@ -29,37 +29,44 @@ extern "C"
 #include "timer.h"
 
   /** ****************************************************************************
- ** ************ DEFINES *******************************************************
- ** ****************************************************************************/
+   ** ************ DEFINES *******************************************************
+   ** ****************************************************************************/
+
+#define STANDBY_STATE 1
+
+// Definitions for menu operation
+#define MAIN_MENU 0 // Menu principal
+#define MODE_CHANGE 19  // definicion para obligar al cambio entre StandBy y modo normal en el LCD
 
   /** ****************************************************************************
- ** ************ VARIABLES *****************************************************
- ** ****************************************************************************/
+   ** ************ VARIABLES *****************************************************
+   ** ****************************************************************************/
 
   /** ****************************************************************************
- ** ************ FUNCTIONS *****************************************************
- ** ****************************************************************************/
-  void IRAM_ATTR swInterrupt(void);              // Interrupcion por presion del switch
-  void IRAM_ATTR encoderInterrupt_A(void);       // Interrupcion por encoder A
-  void IRAM_ATTR encoderInterrupt_B(void);       // Interrupcion por encoder B
-  void IRAM_ATTR standbyButtonInterrupt(void);   // Interrupcion por boton Standby
-  void IRAM_ATTR silenceButtonInterrupt(void);   // Interrupcion por button silence
+   ** ************ FUNCTIONS *****************************************************
+   ** ****************************************************************************/
+  // void IRAM_ATTR swInterrupt(void);              // Interrupcion por presion del switch
+  // void IRAM_ATTR encoderInterrupt_A(void);       // Interrupcion por encoder A
+  // void IRAM_ATTR encoderInterrupt_B(void);       // Interrupcion por encoder B
+  // void IRAM_ATTR standbyButtonInterrupt(void);   // Interrupcion por boton Standby
+  // void IRAM_ATTR silenceButtonInterrupt(void);   // Interrupcion por button silence
   void IRAM_ATTR stabilityButtonInterrupt(void); // Interrupcion por boton estabilidad
 
-  void silenceInterruptAttention(void); // Atencion a interrupcion por boton de silencio
-  void standbyInterruptAttention(void); // Atencion a interrupcion por boton de standby
+  // void silenceInterruptAttention(void);   // Atencion a interrupcion por boton de silencio
+  // void standbyInterruptAttention(void);   // Atencion a interrupcion por boton de standby
+  void stabilityInterruptAttention(void); // Atencion a interrupcion por boton de stability
 
   /* *****************************************************************************
- * *****************************************************************************
- * ******************** USO DE MODULO ADS **************************************
- * *****************************************************************************
- * *****************************************************************************/
+   * *****************************************************************************
+   * ******************** USO DE MODULO ADS **************************************
+   * *****************************************************************************
+   * *****************************************************************************/
 
   /* *****************************************************************************
- * *****************************************************************************
- * ***************** PROTOTYPE DEFINITION **************************************
- * *****************************************************************************
- * *****************************************************************************/
+   * *****************************************************************************
+   * ***************** PROTOTYPE DEFINITION **************************************
+   * *****************************************************************************
+   * *****************************************************************************/
 
 #ifdef __cplusplus
 }

@@ -24,17 +24,17 @@ extern portMUX_TYPE mux;
 extern SemaphoreHandle_t xSemaphoreEncoder;
 
 // bandera de activacion de encoder
-extern volatile uint8_t flagAEncoder;
-extern volatile uint8_t flagBEncoder;
-extern volatile uint8_t flagSEncoder;
+// extern volatile uint8_t flagAEncoder;
+// extern volatile uint8_t flagBEncoder;
+// extern volatile uint8_t flagSEncoder;
 
 // banderas de botones de usuario
-extern volatile uint8_t flagStandbyInterrupt;
-extern volatile uint8_t flagSilenceInterrupt;
+// extern volatile uint8_t flagStandbyInterrupt;
+// extern volatile uint8_t flagSilenceInterrupt;
 extern volatile uint8_t flagStabilityInterrupt;
-extern volatile uint8_t flagBatterySilence;
-extern volatile uint8_t flagAlerta;
-extern volatile uint8_t flagBatteryAlert;
+// extern volatile uint8_t flagBatterySilence;
+// extern volatile uint8_t flagAlerta;
+// extern volatile uint8_t flagBatteryAlert;
 
 // variables de introduccion a los menus de configuracion
 extern byte currentVentilationMode;
@@ -48,7 +48,7 @@ extern volatile signed int menu;
 // variables de introduccion a los menus de configuracion
 extern byte optionConfigMenu;
 extern byte optionVentMenu;
-extern byte batteryAlert;
+// extern byte batteryAlert;
 
 // variable de estado de menu
 extern volatile uint8_t insideMenuFlag;
@@ -63,75 +63,76 @@ extern volatile unsigned int menuAnterior;  // valor de menu anterior
 extern volatile unsigned int lineaAnterior; // valor de menu anterior
 
 // variables contadores de conido de silencio y alarmas
-extern unsigned int contSilence;
-extern unsigned int contSilenceBattery;
-extern unsigned int contStandby;
+// extern unsigned int contSilence;
+// extern unsigned int contSilenceBattery;
+// extern unsigned int contStandby;
+extern unsigned int contStability;
 
 // Variables para menu lineaAnterior
-extern volatile unsigned int lineaAnterior; // valor de menu anterior
+// extern volatile unsigned int lineaAnterior; // valor de menu anterior
 
 /** ****************************************************************************
  ** ************ VARIABLES *****************************************************
  ** ****************************************************************************/
 // Variable de estado del encoder
-unsigned int fl_StateEncoder = 0;
+// unsigned int fl_StateEncoder = 0;
 
 /** ****************************************************************************
  ** ************ FUNCTIONS *****************************************************
  ** ****************************************************************************/
 // Interrupcion por presion del switch
-void IRAM_ATTR swInterrupt(void)
-{
-    // da el semaforo para que quede libre para la tarea pulsador
-    portENTER_CRITICAL_ISR(&mux);
-    flagSEncoder = true;
-    xSemaphoreGiveFromISR(xSemaphoreEncoder, NULL);
-    portEXIT_CRITICAL_ISR(&mux);
-}
+// void IRAM_ATTR swInterrupt(void)
+// {
+//     // da el semaforo para que quede libre para la tarea pulsador
+//     portENTER_CRITICAL_ISR(&mux);
+//     flagSEncoder = true;
+//     xSemaphoreGiveFromISR(xSemaphoreEncoder, NULL);
+//     portEXIT_CRITICAL_ISR(&mux);
+// }
 
 // Interrupcion por encoder A
-void IRAM_ATTR encoderInterrupt_A(void)
-{
-    portENTER_CRITICAL_ISR(&mux);
-    flagAEncoder = true;
-    xSemaphoreGiveFromISR(xSemaphoreEncoder, NULL);
-    portEXIT_CRITICAL_ISR(&mux);
-}
+// void IRAM_ATTR encoderInterrupt_A(void)
+// {
+//     portENTER_CRITICAL_ISR(&mux);
+//     flagAEncoder = true;
+//     xSemaphoreGiveFromISR(xSemaphoreEncoder, NULL);
+//     portEXIT_CRITICAL_ISR(&mux);
+// }
 
 // Interrupcion por encoder B
-void IRAM_ATTR encoderInterrupt_B(void)
-{
-    portENTER_CRITICAL_ISR(&mux);
-    flagBEncoder = true;
-    xSemaphoreGiveFromISR(xSemaphoreEncoder, NULL);
-    portEXIT_CRITICAL_ISR(&mux);
-}
+// void IRAM_ATTR encoderInterrupt_B(void)
+// {
+//     portENTER_CRITICAL_ISR(&mux);
+//     flagBEncoder = true;
+//     xSemaphoreGiveFromISR(xSemaphoreEncoder, NULL);
+//     portEXIT_CRITICAL_ISR(&mux);
+// }
 
 // Interrupcion por boton Standby
-void IRAM_ATTR standbyButtonInterrupt(void)
-{
-    portENTER_CRITICAL_ISR(&mux);
-    detachInterrupt(digitalPinToInterrupt(STANDBY));
-    flagStandbyInterrupt = true;
-    portEXIT_CRITICAL_ISR(&mux);
-}
+// void IRAM_ATTR standbyButtonInterrupt(void)
+// {
+//     portENTER_CRITICAL_ISR(&mux);
+//     detachInterrupt(digitalPinToInterrupt(STANDBY));
+//     flagStandbyInterrupt = true;
+//     portEXIT_CRITICAL_ISR(&mux);
+// }
 
 // Interrupcion por button silence
-void IRAM_ATTR silenceButtonInterrupt(void)
-{
-    if (flagBatteryAlert == true && flagBatterySilence == false)
-    {
-        portENTER_CRITICAL_ISR(&mux);
-        flagBatterySilence = true;
-        portEXIT_CRITICAL_ISR(&mux);
-    }
-    if (flagAlerta == true && flagSilenceInterrupt == false)
-    {
-        portENTER_CRITICAL_ISR(&mux);
-        flagSilenceInterrupt = true;
-        portEXIT_CRITICAL_ISR(&mux);
-    }
-}
+// void IRAM_ATTR silenceButtonInterrupt(void)
+// {
+//     if (flagBatteryAlert == true && flagBatterySilence == false)
+//     {
+//         portENTER_CRITICAL_ISR(&mux);
+//         flagBatterySilence = true;
+//         portEXIT_CRITICAL_ISR(&mux);
+//     }
+//     if (flagAlerta == true && flagSilenceInterrupt == false)
+//     {
+//         portENTER_CRITICAL_ISR(&mux);
+//         flagSilenceInterrupt = true;
+//         portEXIT_CRITICAL_ISR(&mux);
+//     }
+// }
 
 // Interrupcion por boton estabilidad
 void IRAM_ATTR stabilityButtonInterrupt(void)
@@ -142,126 +143,220 @@ void IRAM_ATTR stabilityButtonInterrupt(void)
     portEXIT_CRITICAL_ISR(&mux);
 }
 
-// Atencion a interrupcion por boton de silencio
-void silenceInterruptAttention(void)
-{
-    if (flagSilenceInterrupt == true)
-    {
-        //digitalWrite(BUZZER_BTN, LOW);
-        contSilence++;
-        if (contSilence > SILENCE_BTN_TIME)
-        {
-            portENTER_CRITICAL(&mux);
-            flagSilenceInterrupt = false;
-            portEXIT_CRITICAL(&mux);
-            contSilence = 0;
-        }
-    }
-    if (flagBatterySilence == true)
-    {
-        //digitalWrite(BUZZER_BTN, LOW);
-        contSilenceBattery++;
-        if (contSilenceBattery > SILENCE_BTN_BATTERY)
-        {
-            portENTER_CRITICAL(&mux);
-            flagBatterySilence = false;
-            portEXIT_CRITICAL(&mux);
-            contSilenceBattery = 0;
-        }
-    }
-}
+// // Atencion a interrupcion por boton de silencio
+// void silenceInterruptAttention(void)
+// {
+//     if (flagSilenceInterrupt == true)
+//     {
+//         //digitalWrite(BUZZER_BTN, LOW);
+//         contSilence++;
+//         if (contSilence > SILENCE_BTN_TIME)
+//         {
+//             portENTER_CRITICAL(&mux);
+//             flagSilenceInterrupt = false;
+//             portEXIT_CRITICAL(&mux);
+//             contSilence = 0;
+//         }
+//     }
+//     if (flagBatterySilence == true)
+//     {
+//         //digitalWrite(BUZZER_BTN, LOW);
+//         contSilenceBattery++;
+//         if (contSilenceBattery > SILENCE_BTN_BATTERY)
+//         {
+//             portENTER_CRITICAL(&mux);
+//             flagBatterySilence = false;
+//             portEXIT_CRITICAL(&mux);
+//             contSilenceBattery = 0;
+//         }
+//     }
+// }
 
 // Atencion a interrupcion por boton de standby
-void standbyInterruptAttention(void)
+// void standbyInterruptAttention(void)
+// {
+//     if (flagStandbyInterrupt)
+//     {
+//         contStandby++;
+//         if (stateMachine == STANDBY_STATE && contStandby > 500 && digitalRead(STANDBY) == 0)
+//         {
+//             portENTER_CRITICAL(&mux);
+//             attachInterrupt(digitalPinToInterrupt(STANDBY), standbyButtonInterrupt, FALLING);
+//             flagStandbyInterrupt = false;
+//             portEXIT_CRITICAL(&mux);
+//             contStandby = 0;
+
+//             switch (currentVentilationMode)
+//             {
+//             case 0:
+//                 stateMachine = PCMV_STATE;
+//                 portENTER_CRITICAL_ISR(&mux);
+//                 attachInterrupt(digitalPinToInterrupt(STABILITY_BTN), stabilityButtonInterrupt, FALLING);
+//                 portEXIT_CRITICAL_ISR(&mux);
+//                 break;
+//             case 1:
+//                 stateMachine = AC_STATE;
+//                 portENTER_CRITICAL_ISR(&mux);
+//                 attachInterrupt(digitalPinToInterrupt(STABILITY_BTN), stabilityButtonInterrupt, FALLING);
+//                 portEXIT_CRITICAL_ISR(&mux);
+//                 break;
+//             case 2:
+//                 stateMachine = CPAP_STATE;
+//                 digitalWrite(STABILITY_LED, LOW);
+//                 digitalWrite(LUMING, LOW);
+//                 portENTER_CRITICAL_ISR(&mux);
+//                 detachInterrupt(digitalPinToInterrupt(STABILITY_BTN));
+//                 portEXIT_CRITICAL_ISR(&mux);
+//                 break;
+//             default:
+//                 stateMachine = STANDBY_STATE;
+//                 digitalWrite(STANDBY_LED, HIGH);
+//                 digitalWrite(STABILITY_LED, LOW);
+//                 digitalWrite(LUMING, LOW);
+//                 portENTER_CRITICAL_ISR(&mux);
+//                 detachInterrupt(digitalPinToInterrupt(STABILITY_BTN));
+//                 portEXIT_CRITICAL_ISR(&mux);
+//                 break;
+//             }
+//             //Serial.println("I am on Cycling state");
+//             digitalWrite(STANDBY_LED, LOW);
+//             lineaAnterior = MODE_CHANGE;
+
+//             sendSerialData();
+
+//             if (menu == SERVICE_MENU)
+//             {
+//                 // menu = VENT_MENU;
+//                 menu = MAIN_MENU;
+//                 insideMenuFlag = false;
+//                 optionConfigMenu = 0;
+//                 optionVentMenu = 0;
+//                 menuImprimir = menu;
+//                 menuAnterior = VENT_MENU;
+//                 lineaAlerta = menu;
+//                 flagAlreadyPrint = false;
+//             }
+//         }
+//         else if (stateMachine != STANDBY_STATE)
+//         {
+//             // Serial.println(digitalRead(STANDBY));
+//             if (contStandby < 3000 && digitalRead(STANDBY) == 1)
+//             {
+//                 contStandby = 0;
+//                 portENTER_CRITICAL_ISR(&mux);
+//                 attachInterrupt(digitalPinToInterrupt(STANDBY), standbyButtonInterrupt, FALLING);
+//                 flagStandbyInterrupt = false;
+//                 portEXIT_CRITICAL_ISR(&mux);
+//             }
+//             else if (contStandby > 3000)
+//             {
+//                 contStandby = 0;
+//                 stateMachine = STANDBY_STATE;
+//                 digitalWrite(STANDBY_LED, HIGH);
+//                 digitalWrite(STABILITY_LED, LOW);
+//                 digitalWrite(LUMING, LOW);
+//                 portENTER_CRITICAL_ISR(&mux);
+//                 attachInterrupt(digitalPinToInterrupt(STANDBY), standbyButtonInterrupt, FALLING);
+//                 flagStandbyInterrupt = false;
+//                 detachInterrupt(digitalPinToInterrupt(STABILITY_BTN));
+//                 portEXIT_CRITICAL_ISR(&mux);
+//                 lineaAnterior = MODE_CHANGE;
+//                 sendSerialData();
+//                 //Serial.println("I am on Standby state");
+//             }
+//         }
+//     }
+// }
+
+// Atencion a interrupcion por boton de stability
+void stabilityInterruptAttention(void)
 {
-    if (flagStandbyInterrupt)
+    if (flagStabilityInterrupt)
     {
-        contStandby++;
-        if (stateMachine == STANDBY_STATE && contStandby > 500 && digitalRead(STANDBY) == 0)
+        contStability++;
+        if (stateMachine == STANDBY_STATE && contStability > 500 && digitalRead(STABILITY_BTN) == 0)
         {
             portENTER_CRITICAL(&mux);
-            attachInterrupt(digitalPinToInterrupt(STANDBY), standbyButtonInterrupt, FALLING);
-            flagStandbyInterrupt = false;
+            attachInterrupt(digitalPinToInterrupt(STABILITY_BTN), stabilityButtonInterrupt, FALLING);
+            flagStabilityInterrupt = false;
             portEXIT_CRITICAL(&mux);
-            contStandby = 0;
+            contStability = 0;
 
-            switch (currentVentilationMode)
-            {
-            case 0:
-                stateMachine = PCMV_STATE;
-                portENTER_CRITICAL_ISR(&mux);
-                attachInterrupt(digitalPinToInterrupt(STABILITY_BTN), stabilityButtonInterrupt, FALLING);
-                portEXIT_CRITICAL_ISR(&mux);
-                break;
-            case 1:
-                stateMachine = AC_STATE;
-                portENTER_CRITICAL_ISR(&mux);
-                attachInterrupt(digitalPinToInterrupt(STABILITY_BTN), stabilityButtonInterrupt, FALLING);
-                portEXIT_CRITICAL_ISR(&mux);
-                break;
-            case 2:
-                stateMachine = CPAP_STATE;
-                digitalWrite(STABILITY_LED, LOW);
-                digitalWrite(LUMING, LOW);
-                portENTER_CRITICAL_ISR(&mux);
-                detachInterrupt(digitalPinToInterrupt(STABILITY_BTN));
-                portEXIT_CRITICAL_ISR(&mux);
-                break;
-            default:
-                stateMachine = STANDBY_STATE;
-                digitalWrite(STANDBY_LED, HIGH);
-                digitalWrite(STABILITY_LED, LOW);
-                digitalWrite(LUMING, LOW);
-                portENTER_CRITICAL_ISR(&mux);
-                detachInterrupt(digitalPinToInterrupt(STABILITY_BTN));
-                portEXIT_CRITICAL_ISR(&mux);
-                break;
-            }
-            //Serial.println("I am on Cycling state");
-            digitalWrite(STANDBY_LED, LOW);
-            lineaAnterior = MODE_CHANGE;
+            // switch (currentVentilationMode)
+            // {
+            // case 0:
+            //     stateMachine = PCMV_STATE;
+            //     portENTER_CRITICAL_ISR(&mux);
+            //     attachInterrupt(digitalPinToInterrupt(STABILITY_BTN), stabilityButtonInterrupt, FALLING);
+            //     portEXIT_CRITICAL_ISR(&mux);
+            //     break;
+            // case 1:
+            //     stateMachine = AC_STATE;
+            //     portENTER_CRITICAL_ISR(&mux);
+            //     attachInterrupt(digitalPinToInterrupt(STABILITY_BTN), stabilityButtonInterrupt, FALLING);
+            //     portEXIT_CRITICAL_ISR(&mux);
+            //     break;
+            // case 2:
+            //     stateMachine = CPAP_STATE;
+            //     digitalWrite(STABILITY_LED, LOW);
+            //     digitalWrite(LUMING, LOW);
+            //     portENTER_CRITICAL_ISR(&mux);
+            //     detachInterrupt(digitalPinToInterrupt(STABILITY_BTN));
+            //     portEXIT_CRITICAL_ISR(&mux);
+            //     break;
+            // default:
+            //     stateMachine = STANDBY_STATE;
+            //     digitalWrite(STANDBY_LED, HIGH);
+            //     digitalWrite(STABILITY_LED, LOW);
+            //     digitalWrite(LUMING, LOW);
+            //     portENTER_CRITICAL_ISR(&mux);
+            //     detachInterrupt(digitalPinToInterrupt(STABILITY_BTN));
+            //     portEXIT_CRITICAL_ISR(&mux);
+            //     break;
+            // }
+            // Serial.println("I am on Cycling state");
+            digitalWrite(STABILITY_LED, LOW);
+            // lineaAnterior = MODE_CHANGE;
 
             sendSerialData();
 
-            if (menu == SERVICE_MENU)
-            {
-                // menu = VENT_MENU;
-                menu = MAIN_MENU;
-                insideMenuFlag = false;
-                optionConfigMenu = 0;
-                optionVentMenu = 0;
-                menuImprimir = menu;
-                menuAnterior = VENT_MENU;
-                lineaAlerta = menu;
-                flagAlreadyPrint = false;
-            }
+            // if (menu == SERVICE_MENU)
+            // {
+            //     // menu = VENT_MENU;
+            //     menu = MAIN_MENU;
+            //     insideMenuFlag = false;
+            //     optionConfigMenu = 0;
+            //     optionVentMenu = 0;
+            //     menuImprimir = menu;
+            //     menuAnterior = VENT_MENU;
+            //     lineaAlerta = menu;
+            //     flagAlreadyPrint = false;
+            // }
         }
         else if (stateMachine != STANDBY_STATE)
         {
             // Serial.println(digitalRead(STANDBY));
-            if (contStandby < 3000 && digitalRead(STANDBY) == 1)
+            if (contStability < 3000 && digitalRead(STABILITY_BTN) == 1)
             {
-                contStandby = 0;
+                contStability = 0;
                 portENTER_CRITICAL_ISR(&mux);
-                attachInterrupt(digitalPinToInterrupt(STANDBY), standbyButtonInterrupt, FALLING);
-                flagStandbyInterrupt = false;
+                attachInterrupt(digitalPinToInterrupt(STABILITY_BTN), stabilityButtonInterrupt, FALLING);
+                flagStabilityInterrupt = false;
                 portEXIT_CRITICAL_ISR(&mux);
             }
-            else if (contStandby > 3000)
+            else if (contStability > 3000)
             {
-                contStandby = 0;
+                contStability = 0;
                 stateMachine = STANDBY_STATE;
-                digitalWrite(STANDBY_LED, HIGH);
                 digitalWrite(STABILITY_LED, LOW);
                 digitalWrite(LUMING, LOW);
                 portENTER_CRITICAL_ISR(&mux);
-                attachInterrupt(digitalPinToInterrupt(STANDBY), standbyButtonInterrupt, FALLING);
-                flagStandbyInterrupt = false;
-                detachInterrupt(digitalPinToInterrupt(STABILITY_BTN));
+                attachInterrupt(digitalPinToInterrupt(STABILITY_BTN), stabilityButtonInterrupt, FALLING);
+                flagStabilityInterrupt = false;
                 portEXIT_CRITICAL_ISR(&mux);
-                lineaAnterior = MODE_CHANGE;
+                // lineaAnterior = MODE_CHANGE;
                 sendSerialData();
-                //Serial.println("I am on Standby state");
+                // Serial.println("I am on Standby state");
             }
         }
     }

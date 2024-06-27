@@ -89,21 +89,21 @@ void lcd_show_comp(void)
     menuAnterior = menuImprimir;
     lineaAnterior = lineaAlerta;
     flagAlreadyPrint = true;
-    String calculatedRelacion_IE;
-    if (currentRelacionIE > 0)
-    {
-        //relacion_IE = "1:" + String((float)currentRelacionIE / 10, 1);
-        relacion_IE = "1:" + String((float)currentRelacionIE / 10, 1);
-        calculatedRelacion_IE = "1:" + String((float)calculatedE / 10.0, 1);
-        I = 1;
-        E = (char)currentRelacionIE;
-    }
-    else
-    {
-        relacion_IE = String(-(float)currentRelacionIE / 10, 1) + ":1";
-        I = (char)(-currentRelacionIE);
-        E = 1;
-    }
+    // String calculatedRelacion_IE;
+    // if (currentRelacionIE > 0)
+    // {
+    //     //relacion_IE = "1:" + String((float)currentRelacionIE / 10, 1);
+    //     relacion_IE = "1:" + String((float)currentRelacionIE / 10, 1);
+    //     calculatedRelacion_IE = "1:" + String((float)calculatedE / 10.0, 1);
+    //     I = 1;
+    //     E = (char)currentRelacionIE;
+    // }
+    // else
+    // {
+    //     relacion_IE = String(-(float)currentRelacionIE / 10, 1) + ":1";
+    //     I = (char)(-currentRelacionIE);
+    //     E = 1;
+    // }
 
     // Print the first line
     lcdPrintFirstLine();
@@ -116,7 +116,7 @@ void lcd_show_comp(void)
         lcd.print("FR        PIP     ");
         lcd.setCursor(4, 1);
         lcd.print(frecRespiratoriaCalculada);
-        //lcd.print(currentFrecRespiratoria);
+        // lcd.print(currentFrecRespiratoria);
         lcd.setCursor(15, 1);
         lcd.print(String(Ppico, 0));
         lcd.setCursor(0, 2);
@@ -133,7 +133,7 @@ void lcd_show_comp(void)
             lcd.print(String(currentVE / 10.0, 1));
         }
         lcd.setCursor(4, 2);
-        lcd.print(calculatedRelacion_IE + " ");
+        // lcd.print(calculatedRelacion_IE + " ");
         lcd.setCursor(0, 3);
         lcd.print("VT        PEEP      ");
         lcd.setCursor(4, 3);
@@ -149,159 +149,159 @@ void lcd_show_comp(void)
         VTAnte = VT;
         PconAnte = Pcon;
         break;
-    case CONFIG_MENU:
-        lcd.setCursor(0, 1);
-        lcd.print("                    ");
-        if (currentVentilationMode == 1)
-        { // A/C Mode
-            lcd.setCursor(0, 2);
-            lcd.print(" Trig | Frec | I:E  ");
-            lcd.setCursor(0, 3);
-            lcd.print("      |      |      ");
-            lcd.setCursor(2, 3);
-            lcd.print(trigger);
-            lcd.setCursor(9, 3);
-            lcd.print(currentFrecRespiratoria);
-            lcd.setCursor(14, 3);
-            lcd.print(relacion_IE);
-            frecRespiratoriaAnte = currentFrecRespiratoria;
-            IAnte = I;
-            EAnte = E;
-        }
-        else if (currentVentilationMode == 2)
-        { // CPAP Mode
-            lcd.setCursor(0, 2);
-            lcd.print("  PEEP-CPAP:        ");
-            lcd.setCursor(13, 2);
-            lcd.print(int(Peep));
-            lcd.setCursor(0, 3);
-            lcd.print("  CPAP MIN:         ");
-            lcd.setCursor(13, 3);
-            lcd.print(PeepMax);
-        }
-        else
-        { // P-CMV
-            lcd.setCursor(0, 2);
-            lcd.print("    Frec  |  I:E    ");
-            lcd.setCursor(0, 3);
-            lcd.print("          |         ");
-            lcd.setCursor(5, 3);
-            lcd.print(currentFrecRespiratoria);
-            lcd.setCursor(12, 3);
-            lcd.print(relacion_IE);
-            frecRespiratoriaAnte = currentFrecRespiratoria;
-            IAnte = I;
-            EAnte = E;
-        }
-        break;
-    case VENT_MENU:
-        lcd.setCursor(0, 1);
-        lcd.print("                    ");
-        lcd.setCursor(0, 2);
-        lcd.print(" P-CMV   A/C   CPAP ");
-        if (currentVentilationMode == 0)
-        {
-            lcd.setCursor(6, 2);
-            lcd.print('*');
-        }
-        else if (currentVentilationMode == 1)
-        {
-            lcd.setCursor(12, 2);
-            lcd.print('*');
-        }
-        else
-        {
-            lcd.setCursor(19, 2);
-            lcd.print('*');
-        }
-        lcd.setCursor(0, 3);
-        lcd.print("                    ");
-        break;
-    case CONFIG_ALARM:
-        lcd.setCursor(0, 1);
-        lcd.print("                    ");
-        lcd.setCursor(0, 2);
-        lcd.print("  PIP |  FR  |  VE  ");
-        lcd.setCursor(0, 3);
-        lcd.print("      |      |      ");
-        lcd.setCursor(2, 3);
-        lcd.print(maxPresion);
-        lcd.setCursor(9, 3);
-        lcd.print(maxFR);
-        lcd.setCursor(16, 3);
-        lcd.print(maxVE);
-        maxPresionAnte = maxPresion;
-        minFR_Ante = maxFR;
-        minVE_Ante = maxVE;
-        break;
-    case CHECK_MENU:
-        lcd.setCursor(0, 1);
-        lcd.print("                    ");
-        lcd.setCursor(0, 2);
-        lcd.print("Valvulas            ");
-        lcd.setCursor(0, 3);
-        lcd.print("Sensores            ");
-        break;
-    case CONFIRM_MENU:
-        lcd.setCursor(0, 1);
-        lcd.print("                    ");
-        lcd.setCursor(0, 2);
-        if (flagConfirm == true)
-        {
-            lcd.print("   ");
-            lcd.write(126);
-            lcd.print("Si        No    ");
-        }
-        else
-        {
-            lcd.print("    Si       ");
-            lcd.write(126);
-            lcd.print("No    ");
-        }
-        lcd.setCursor(0, 3);
-        lcd.print("                    ");
-        break;
-    case CPAP_MENU:
-        lcd.setCursor(0, 1);
-        lcd.print("                    ");
-        lcd.setCursor(0, 2);
-        lcd.print("   PEEP CPAP =      ");
-        lcd.setCursor(14, 2);
-        lcd.print(int(Peep));
-        break;
-    case SERVICE_MENU:
-        // flagLeakage = false;
-        lcd.setCursor(0, 1);
-        lcd.print("Tape filtro o la Y  ");
-        lcd.setCursor(0, 2);
-        lcd.print("                    ");
-        lcd.setCursor(0, 3);
-        lcd.print("Flujo     ");
-        lcd.setCursor(6, 3);
-        if (flowPac >= 0)
-        {
-            lcd.print(' ');
-        }
-        else
-        {
-            lcd.setCursor(7, 3);
-        }
-        lcd.print(flowPac);
-        lcd.print(' ');
+    // case CONFIG_MENU:
+    //     lcd.setCursor(0, 1);
+    //     lcd.print("                    ");
+    //     if (currentVentilationMode == 1)
+    //     { // A/C Mode
+    //         lcd.setCursor(0, 2);
+    //         lcd.print(" Trig | Frec | I:E  ");
+    //         lcd.setCursor(0, 3);
+    //         lcd.print("      |      |      ");
+    //         lcd.setCursor(2, 3);
+    //         lcd.print(trigger);
+    //         lcd.setCursor(9, 3);
+    //         lcd.print(currentFrecRespiratoria);
+    //         lcd.setCursor(14, 3);
+    //         lcd.print(relacion_IE);
+    //         frecRespiratoriaAnte = currentFrecRespiratoria;
+    //         IAnte = I;
+    //         EAnte = E;
+    //     }
+    //     else if (currentVentilationMode == 2)
+    //     { // CPAP Mode
+    //         lcd.setCursor(0, 2);
+    //         lcd.print("  PEEP-CPAP:        ");
+    //         lcd.setCursor(13, 2);
+    //         lcd.print(int(Peep));
+    //         lcd.setCursor(0, 3);
+    //         lcd.print("  CPAP MIN:         ");
+    //         lcd.setCursor(13, 3);
+    //         lcd.print(PeepMax);
+    //     }
+    //     else
+    //     { // P-CMV
+    //         lcd.setCursor(0, 2);
+    //         lcd.print("    Frec  |  I:E    ");
+    //         lcd.setCursor(0, 3);
+    //         lcd.print("          |         ");
+    //         lcd.setCursor(5, 3);
+    //         lcd.print(currentFrecRespiratoria);
+    //         lcd.setCursor(12, 3);
+    //         lcd.print(relacion_IE);
+    //         frecRespiratoriaAnte = currentFrecRespiratoria;
+    //         IAnte = I;
+    //         EAnte = E;
+    //     }
+    //     break;
+    // case VENT_MENU:
+    //     lcd.setCursor(0, 1);
+    //     lcd.print("                    ");
+    //     lcd.setCursor(0, 2);
+    //     lcd.print(" P-CMV   A/C   CPAP ");
+    //     if (currentVentilationMode == 0)
+    //     {
+    //         lcd.setCursor(6, 2);
+    //         lcd.print('*');
+    //     }
+    //     else if (currentVentilationMode == 1)
+    //     {
+    //         lcd.setCursor(12, 2);
+    //         lcd.print('*');
+    //     }
+    //     else
+    //     {
+    //         lcd.setCursor(19, 2);
+    //         lcd.print('*');
+    //     }
+    //     lcd.setCursor(0, 3);
+    //     lcd.print("                    ");
+    //     break;
+    // case CONFIG_ALARM:
+    //     lcd.setCursor(0, 1);
+    //     lcd.print("                    ");
+    //     lcd.setCursor(0, 2);
+    //     lcd.print("  PIP |  FR  |  VE  ");
+    //     lcd.setCursor(0, 3);
+    //     lcd.print("      |      |      ");
+    //     lcd.setCursor(2, 3);
+    //     lcd.print(maxPresion);
+    //     lcd.setCursor(9, 3);
+    //     lcd.print(maxFR);
+    //     lcd.setCursor(16, 3);
+    //     lcd.print(maxVE);
+    //     maxPresionAnte = maxPresion;
+    //     minFR_Ante = maxFR;
+    //     minVE_Ante = maxVE;
+    //     break;
+    // case CHECK_MENU:
+    //     lcd.setCursor(0, 1);
+    //     lcd.print("                    ");
+    //     lcd.setCursor(0, 2);
+    //     lcd.print("Valvulas            ");
+    //     lcd.setCursor(0, 3);
+    //     lcd.print("Sensores            ");
+    //     break;
+    // case CONFIRM_MENU:
+    //     lcd.setCursor(0, 1);
+    //     lcd.print("                    ");
+    //     lcd.setCursor(0, 2);
+    //     if (flagConfirm == true)
+    //     {
+    //         lcd.print("   ");
+    //         lcd.write(126);
+    //         lcd.print("Si        No    ");
+    //     }
+    //     else
+    //     {
+    //         lcd.print("    Si       ");
+    //         lcd.write(126);
+    //         lcd.print("No    ");
+    //     }
+    //     lcd.setCursor(0, 3);
+    //     lcd.print("                    ");
+    //     break;
+    // case CPAP_MENU:
+    //     lcd.setCursor(0, 1);
+    //     lcd.print("                    ");
+    //     lcd.setCursor(0, 2);
+    //     lcd.print("   PEEP CPAP =      ");
+    //     lcd.setCursor(14, 2);
+    //     lcd.print(int(Peep));
+    //     break;
+    // case SERVICE_MENU:
+    //     // flagLeakage = false;
+    //     lcd.setCursor(0, 1);
+    //     lcd.print("Tape filtro o la Y  ");
+    //     lcd.setCursor(0, 2);
+    //     lcd.print("                    ");
+    //     lcd.setCursor(0, 3);
+    //     lcd.print("Flujo     ");
+    //     lcd.setCursor(6, 3);
+    //     if (flowPac >= 0)
+    //     {
+    //         lcd.print(' ');
+    //     }
+    //     else
+    //     {
+    //         lcd.setCursor(7, 3);
+    //     }
+    //     lcd.print(flowPac);
+    //     lcd.print(' ');
 
-        lcd.setCursor(11, 3);
-        lcd.print("Pres     ");
-        lcd.setCursor(16, 3);
-        if (presPac < 10)
-        {
-            lcd.print(' ');
-        }
-        lcd.print(presPac);
+    //     lcd.setCursor(11, 3);
+    //     lcd.print("Pres     ");
+    //     lcd.setCursor(16, 3);
+    //     if (presPac < 10)
+    //     {
+    //         lcd.print(' ');
+    //     }
+    //     lcd.print(presPac);
 
-        presPacAnte = presPac;
-        flowPacAnte = flowPac;
+    //     presPacAnte = presPac;
+    //     flowPacAnte = flowPac;
 
-        break;
+    //     break;
     default:
         lcd.setCursor(0, 0);
         lcd.print("                    ");
@@ -315,7 +315,7 @@ void lcd_show_comp(void)
         lcd.print("                    ");
         break;
     }
-    //Serial.println("I am in lcd_show()");
+    // Serial.println("I am in lcd_show()");
 }
 
 /******************************************************************************

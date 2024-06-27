@@ -29,33 +29,35 @@
 // inicializacion de los pines del microcontrolador
 void init_GPIO(void)
 {
-    //Encoder setup
-    pinMode(A, INPUT_PULLUP);           // A como entrada
-    pinMode(B, INPUT_PULLUP);           // B como entrada
-    pinMode(SW, INPUT_PULLUP);          // SW como entrada
-    pinMode(SILENCE_BTN, INPUT_PULLUP); // switch para el manejo de silencio
-    pinMode(STANDBY, INPUT_PULLUP);
+    // Encoder setup
+    //  pinMode(A, INPUT_PULLUP);           // A como entrada
+    //  pinMode(B, INPUT_PULLUP);           // B como entrada
+    //  pinMode(SW, INPUT_PULLUP);          // SW como entrada
+    //  pinMode(SILENCE_BTN, INPUT_PULLUP); // switch para el manejo de silencio
+    //  pinMode(STANDBY, INPUT_PULLUP);
     pinMode(STABILITY_BTN, INPUT_PULLUP);
     pinMode(BUZZER_BTN, OUTPUT);
     pinMode(LUMINR, OUTPUT);
     pinMode(LUMING, OUTPUT);
     pinMode(LUMINB, OUTPUT);
-    pinMode(SILENCE_LED, OUTPUT);
-    pinMode(STANDBY_LED, OUTPUT);
+    // pinMode(SILENCE_LED, OUTPUT);
+    // pinMode(STANDBY_LED, OUTPUT);
     pinMode(STABILITY_LED, OUTPUT);
 
-    pinMode(BATTALARM, INPUT);
+    // pinMode(BATTALARM, INPUT);
 
-    attachInterrupt(digitalPinToInterrupt(A), encoderInterrupt_A, FALLING);
-    attachInterrupt(digitalPinToInterrupt(B), encoderInterrupt_B, FALLING);
-    attachInterrupt(digitalPinToInterrupt(SW), swInterrupt, RISING);
-    attachInterrupt(digitalPinToInterrupt(STANDBY), standbyButtonInterrupt, FALLING);
-    attachInterrupt(digitalPinToInterrupt(SILENCE_BTN), silenceButtonInterrupt, FALLING);
-    // attachInterrupt(digitalPinToInterrupt(STABILITY_BTN), stabilityButtonInterrupt, FALLING);
+    // attachInterrupt(digitalPinToInterrupt(A), encoderInterrupt_A, FALLING);
+    // attachInterrupt(digitalPinToInterrupt(B), encoderInterrupt_B, FALLING);
+    // attachInterrupt(digitalPinToInterrupt(SW), swInterrupt, RISING);
+    // attachInterrupt(digitalPinToInterrupt(STANDBY), standbyButtonInterrupt, FALLING);
+    // attachInterrupt(digitalPinToInterrupt(SILENCE_BTN), silenceButtonInterrupt, FALLING);
+    attachInterrupt(digitalPinToInterrupt(STABILITY_BTN), stabilityButtonInterrupt, FALLING);
 
-    digitalWrite(STANDBY_LED, HIGH);
+    // digitalWrite(STANDBY_LED, HIGH);
     digitalWrite(STABILITY_LED, HIGH);
     digitalWrite(LUMING, LOW);
+    digitalWrite(LUMINR, LOW);
+    digitalWrite(LUMINB, LOW);
     // pinMode(LED, OUTPUT);
 }
 

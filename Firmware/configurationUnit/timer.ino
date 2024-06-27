@@ -26,23 +26,23 @@ extern SemaphoreHandle_t xSemaphoreTimer;
 extern byte stateMachine;
 extern byte newVentilationMode;
 
-// variable de estado de menu
-extern volatile uint8_t insideMenuFlag;
+// // variable de estado de menu
+// extern volatile uint8_t insideMenuFlag;
 
-// bandera de activacion de encoder
-extern volatile uint8_t flagAEncoder;
-extern volatile uint8_t flagBEncoder;
-extern volatile uint8_t flagSEncoder;
+// // bandera de activacion de encoder
+// extern volatile uint8_t flagAEncoder;
+// extern volatile uint8_t flagBEncoder;
+// extern volatile uint8_t flagSEncoder;
 
-extern volatile uint8_t flagDetachInterrupt_A;
-extern volatile uint8_t flagDetachInterrupt_B;
-extern volatile uint8_t flagDetachInterrupt_A_B;
-extern volatile uint8_t flagDetachInterrupt_B_A;
-extern volatile uint8_t flagDetachInterrupt_S;
+// extern volatile uint8_t flagDetachInterrupt_A;
+// extern volatile uint8_t flagDetachInterrupt_B;
+// extern volatile uint8_t flagDetachInterrupt_A_B;
+// extern volatile uint8_t flagDetachInterrupt_B_A;
+// extern volatile uint8_t flagDetachInterrupt_S;
 
-extern unsigned int contDetachA;
-extern unsigned int contDetachB;
-extern unsigned int contDetachS;
+// extern unsigned int contDetachA;
+// extern unsigned int contDetachB;
+// extern unsigned int contDetachS;
 
 // banderas de botones de usuario
 extern volatile uint8_t flagStabilityInterrupt;
@@ -90,8 +90,8 @@ void IRAM_ATTR onTimer(void)
 void task_timer(void *arg)
 {
     int contms = 0;
-    uint16_t debounceENC = 0;
-    uint16_t debounceENC_2 = 0;
+    // uint16_t debounceENC = 0;
+    // uint16_t debounceENC_2 = 0;
 
     while (1)
     {
@@ -106,27 +106,27 @@ void task_timer(void *arg)
 
                 switch (stateMachine)
                 {
-                case CHECK_STATE:
-                    //alertMonitoring();
-                    //checkRoutine();
-                    //hardwareInterruptAttention();
-                    break;
+                // case CHECK_STATE:
+                //     //alertMonitoring();
+                //     //checkRoutine();
+                //     //hardwareInterruptAttention();
+                //     break;
                 case STANDBY_STATE:
-                    //alertMonitoring();
-                    standbyInterruptAttention();
+                    // alertMonitoring();
+                    stabilityInterruptAttention();
                     break;
-                case PCMV_STATE:
-                    //alertMonitoring();
-                    standbyInterruptAttention();
-                    break;
-                case AC_STATE:
-                    standbyInterruptAttention();
-                    break;
-                case CPAP_STATE:
-                    standbyInterruptAttention();
-                    break;
-                case FAILURE_STATE:
-                    break;
+                // case PCMV_STATE:
+                //     //alertMonitoring();
+                //     standbyInterruptAttention();
+                //     break;
+                // case AC_STATE:
+                //     standbyInterruptAttention();
+                //     break;
+                // case CPAP_STATE:
+                //     standbyInterruptAttention();
+                //     break;
+                // case FAILURE_STATE:
+                //     break;
                 default:
                     break;
                 }
@@ -144,71 +144,71 @@ void task_timer(void *arg)
                     // Serial.println(xPortGetCoreID());
                 }
                 /****************************************************************************
-				****  En esta seccion del codigo se agregan de nuevo las interrupciones  ****
-				****************************************************************************/
-                if (insideMenuFlag)
-                { // si esta configurando un parametro
-                    debounceENC = DEBOUNCE_ENC;
-                    debounceENC_2 = DEBOUNCE_ENC_2;
-                }
-                else
-                {
-                    debounceENC = DEBOUNCE_ENC_OUT;
-                    debounceENC_2 = DEBOUNCE_ENC_OUT_2;
-                }
+                ****  En esta seccion del codigo se agregan de nuevo las interrupciones  ****
+                ****************************************************************************/
+                // if (insideMenuFlag)
+                // { // si esta configurando un parametro
+                //     debounceENC = DEBOUNCE_ENC;
+                //     debounceENC_2 = DEBOUNCE_ENC_2;
+                // }
+                // else
+                // {
+                //     debounceENC = DEBOUNCE_ENC_OUT;
+                //     debounceENC_2 = DEBOUNCE_ENC_OUT_2;
+                // }
 
-                // Agregar interrupcion A
-                if ((flagDetachInterrupt_A == true) || (flagDetachInterrupt_B_A == true))
-                {
-                    contDetachA++;
-                    if ((contDetachA >= debounceENC) && (flagDetachInterrupt_A == true))
-                    {
-                        contDetachA = 0;
-                        flagDetachInterrupt_A = false;
-                        attachInterrupt(digitalPinToInterrupt(A), encoderInterrupt_A, FALLING);
-                    }
-                    if ((contDetachA >= debounceENC_2) && (flagDetachInterrupt_B_A == true))
-                    {
-                        contDetachB = 0;
-                        flagDetachInterrupt_B_A = false;
-                        attachInterrupt(digitalPinToInterrupt(B), encoderInterrupt_B, FALLING);
-                    }
-                }
-                // Agregar interrupcion B
-                if ((flagDetachInterrupt_B == true) || (flagDetachInterrupt_A_B == true))
-                {
-                    contDetachB++;
-                    if ((contDetachB >= debounceENC) && (flagDetachInterrupt_B == true))
-                    {
-                        contDetachB = 0;
-                        flagDetachInterrupt_B = false;
-                        attachInterrupt(digitalPinToInterrupt(B), encoderInterrupt_B, FALLING);
-                    }
-                    if ((contDetachB >= debounceENC_2) && (flagDetachInterrupt_A_B == true))
-                    {
-                        contDetachB = 0;
-                        flagDetachInterrupt_A_B = false;
-                        attachInterrupt(digitalPinToInterrupt(A), encoderInterrupt_A, FALLING);
-                    }
-                }
-                // Agregar interrupcion S
-                if (flagDetachInterrupt_S == true)
-                {
-                    contDetachS++;
-                    if (contDetachS >= DEBOUNCE_ENC_SW)
-                    {
-                        contDetachS = 0;
-                        flagDetachInterrupt_S = false;
-                        attachInterrupt(digitalPinToInterrupt(SW), swInterrupt, FALLING);
-                    }
-                } // Finaliza agregar interrupciones
+                // // Agregar interrupcion A
+                // if ((flagDetachInterrupt_A == true) || (flagDetachInterrupt_B_A == true))
+                // {
+                //     contDetachA++;
+                //     if ((contDetachA >= debounceENC) && (flagDetachInterrupt_A == true))
+                //     {
+                //         contDetachA = 0;
+                //         flagDetachInterrupt_A = false;
+                //         attachInterrupt(digitalPinToInterrupt(A), encoderInterrupt_A, FALLING);
+                //     }
+                //     if ((contDetachA >= debounceENC_2) && (flagDetachInterrupt_B_A == true))
+                //     {
+                //         contDetachB = 0;
+                //         flagDetachInterrupt_B_A = false;
+                //         attachInterrupt(digitalPinToInterrupt(B), encoderInterrupt_B, FALLING);
+                //     }
+                // }
+                // // Agregar interrupcion B
+                // if ((flagDetachInterrupt_B == true) || (flagDetachInterrupt_A_B == true))
+                // {
+                //     contDetachB++;
+                //     if ((contDetachB >= debounceENC) && (flagDetachInterrupt_B == true))
+                //     {
+                //         contDetachB = 0;
+                //         flagDetachInterrupt_B = false;
+                //         attachInterrupt(digitalPinToInterrupt(B), encoderInterrupt_B, FALLING);
+                //     }
+                //     if ((contDetachB >= debounceENC_2) && (flagDetachInterrupt_A_B == true))
+                //     {
+                //         contDetachB = 0;
+                //         flagDetachInterrupt_A_B = false;
+                //         attachInterrupt(digitalPinToInterrupt(A), encoderInterrupt_A, FALLING);
+                //     }
+                // }
+                // // Agregar interrupcion S
+                // if (flagDetachInterrupt_S == true)
+                // {
+                //     contDetachS++;
+                //     if (contDetachS >= DEBOUNCE_ENC_SW)
+                //     {
+                //         contDetachS = 0;
+                //         flagDetachInterrupt_S = false;
+                //         attachInterrupt(digitalPinToInterrupt(SW), swInterrupt, FALLING);
+                //     }
+                // } // Finaliza agregar interrupciones
 
                 if (flagStabilityInterrupt == true)
                 {
                     contStability++;
                     if (contStability > 400)
                     {
-                        //Serial.println("Estabilidad");
+                        // Serial.println("Estabilidad");
                         contStability = 0;
                         sendSerialData();
                         portENTER_CRITICAL(&timerMux);
@@ -219,7 +219,7 @@ void task_timer(void *arg)
                         digitalWrite(LUMING, HIGH);
                     }
                 }
-                alarmMonitoring();
+                // alarmMonitoring();
             }
         }
     }

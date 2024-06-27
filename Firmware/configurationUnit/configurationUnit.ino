@@ -18,7 +18,7 @@
 #include "initializer.h"
 #include "timer.h"
 #include "interruption.h"
-#include "encoder.h"
+// #include "encoder.h"
 #include "serialCONT.h"
 #include "lcdComplete.h"
 #include "lcdPartial.h"
@@ -114,7 +114,7 @@ byte maxPresion = 30;
 byte maxFR = 30;
 byte maxVE = 30;
 
-byte batteryAlert = BATTERY_NO_ALARM;
+// byte batteryAlert = BATTERY_NO_ALARM;
 
 // Variables calculadas
 byte frecRespiratoriaCalculada = 0;
@@ -139,7 +139,7 @@ byte newVentilationMode = 0;
 volatile unsigned int menuImprimir = MAIN_MENU;
 volatile unsigned int lineaAlerta = MAIN_MENU;
 volatile uint8_t flagAlreadyPrint = false;
-int menuAlerta[ALARM_QUANTITY + 1] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+// int menuAlerta[ALARM_QUANTITY + 1] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 // variables contadores de silencio y alarmas
 unsigned int contSilence = 0;
@@ -168,8 +168,8 @@ int alerVE_Alto = 0;
 volatile uint8_t flagToACBackUp = 0;
 
 // Variables para menu anterior
-volatile unsigned int menuAnterior = CONFIRM_MENU;	// valor de menu anterior
-volatile unsigned int lineaAnterior = CONFIRM_MENU; // valor de menu anterior
+volatile unsigned int menuAnterior = MAIN_MENU;	 // valor de menu anterior
+volatile unsigned int lineaAnterior = MAIN_MENU; // valor de menu anterior
 byte IAnte = 1;
 byte EAnte = 1;
 float PpicoAnte = 1;
@@ -191,9 +191,9 @@ int flagEncoder = 0;
 
 byte sensibilityCPAP = 0;
 
-//creo el manejador para el semaforo como variable global
+// creo el manejador para el semaforo como variable global
 
-//xQueueHandle timer_queue = NULL;
+// xQueueHandle timer_queue = NULL;
 
 /** ****************************************************************************
  ** ************ FUNCTIONS *****************************************************
@@ -208,39 +208,38 @@ void setup()
 	Serial.begin(115200);
 	Serial2.begin(115200, SERIAL_8N1, RXD2, TXD2);
 	Serial2.setTimeout(10);
-	
+
 	vTaskDelay(100 / portTICK_PERIOD_MS);
 
 	// nvs_flash_init();
 
-	// modo servicio de fabrica
-	if ((digitalRead(SILENCE_BTN) == LOW) && (digitalRead(STABILITY_BTN) == LOW))
-	{
-		while (digitalRead(SILENCE_BTN) == LOW)
-		{
-			flagService = true;
-			Serial2.print('M');
-			vTaskDelay(50 / portTICK_PERIOD_MS);
-		}
-	}
-	else if (digitalRead(SILENCE_BTN) == LOW)
-	{ // Modo servicio de fabrica
-		while (digitalRead(SILENCE_BTN) == LOW)
-		{
-			flagService = true;
-			Serial2.print('S');
-			vTaskDelay(50 / portTICK_PERIOD_MS);
-		}
-	}
+	// // modo servicio de fabrica
+	// if ((digitalRead(SILENCE_BTN) == LOW) && (digitalRead(STABILITY_BTN) == LOW))
+	// {
+	// 	while (digitalRead(SILENCE_BTN) == LOW)
+	// 	{
+	// 		flagService = true;
+	// 		Serial2.print('M');
+	// 		vTaskDelay(50 / portTICK_PERIOD_MS);
+	// 	}
+	// }
+	// else if (digitalRead(SILENCE_BTN) == LOW)
+	// { // Modo servicio de fabrica
+	// 	while (digitalRead(SILENCE_BTN) == LOW)
+	// 	{
+	// 		flagService = true;
+	// 		Serial2.print('S');
+	// 		vTaskDelay(50 / portTICK_PERIOD_MS);
+	// 	}
+	// }
 
-	
 	// se crea el semaforo binario
 	xSemaphoreEncoder = xSemaphoreCreateBinary();
 	xSemaphoreTimer = xSemaphoreCreateBinary();
 	init_Timer();
 
 	// creo la tarea task_pulsador
-	xTaskCreatePinnedToCore(task_Encoder, "task_Encoder", 2048, NULL, 4, NULL, taskCoreOne);
+	// xTaskCreatePinnedToCore(task_Encoder, "task_Encoder", 2048, NULL, 4, NULL, taskCoreOne);
 	// xTaskCreatePinnedToCore(task_Encoder_B, "task_Encoder_B", 10000, NULL, 1, NULL, taskCoreZero);
 
 	xTaskCreatePinnedToCore(task_timer, "task_timer", 2048, NULL, 2, NULL, taskCoreOne);
