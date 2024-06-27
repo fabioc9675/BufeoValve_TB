@@ -15,6 +15,7 @@
 
 #include "LiquidCrystal_I2C.h"
 #include "initializer.h"
+#include "lcdConfig.h"
 
 /** ****************************************************************************
  ** ************ DEFINES *******************************************************
@@ -61,6 +62,12 @@ float estanquedad = 0;
 float presion = 0;
 float corriente = 0;
 
+// Variable de la maquina de estados
+byte stateMachine = MAIN_MENU;
+
+// Variables para el manejo de los mensajes en pantalla
+volatile uint8_t flagAlreadyPrint = false;
+
 // creo el manejador para el semaforo como variable global
 
 // xQueueHandle timer_queue = NULL;
@@ -91,7 +98,7 @@ void setup()
 	xTaskCreatePinnedToCore(task_Prueba, "task_Prueba", 2048, NULL, 1, NULL, taskCoreOne);
 
 	// xTaskCreatePinnedToCore(task_timer, "task_timer", 2048, NULL, 2, NULL, taskCoreOne);
-	// xTaskCreatePinnedToCore(task_Display, "task_Display", 2048, NULL, 3, NULL, taskCoreOne); // se puede colocar en el core cero
+	xTaskCreatePinnedToCore(task_display, "task_display", 2048, NULL, 3, NULL, taskCoreOne); // se puede colocar en el core cero
 	// xTaskCreatePinnedToCore(task_Receive, "task_Receive", 2048, NULL, 1, NULL, taskCoreOne);
 
 	// Clean Serial buffers
