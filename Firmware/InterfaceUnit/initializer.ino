@@ -37,7 +37,7 @@ void init_GPIO(void)
     pinMode(LUMINB, OUTPUT);
     pinMode(ACTION_LED, OUTPUT);
 
-    // attachInterrupt(digitalPinToInterrupt(ACTION_BTN), actionButtonInterrupt, FALLING);
+    attachInterrupt(digitalPinToInterrupt(ACTION_BTN), actionButtonInterrupt, FALLING);
 
     // digitalWrite(STANDBY_LED, HIGH);
     digitalWrite(ACTION_LED, HIGH);

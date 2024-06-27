@@ -32,6 +32,7 @@ extern volatile uint8_t flagCorriente;
 
 // variables de estado de ventilacion
 extern byte stateMachine;
+extern String stateString;
 
 /** ****************************************************************************
  ** ************ VARIABLES *****************************************************
@@ -157,7 +158,7 @@ void lcdPrintFirstLine(void)
  * ***************************************************************************/
 void task_display(void *pvParameters)
 {
-    String taskMessage = "LCD Task one running on core ";
+    String taskMessage = "LCD Task running on core ";
     taskMessage = taskMessage + xPortGetCoreID();
     // Serial.println(taskMessage);
 
@@ -190,6 +191,18 @@ void task_display(void *pvParameters)
         // vTaskDelay(1000 / portTICK_PERIOD_MS);
         // lcd.blink_off();
         // vTaskDelay(2000 / portTICK_PERIOD_MS);
+        digitalWrite(LUMING, !digitalRead(LUMING));
+
+        if (flagAlreadyPrint == false)
+        {
+            digitalWrite(LUMINB, HIGH);
+            flagAlreadyPrint = true;
+            lcd.setCursor(1, 1);
+            lcd.print(stateString);
+            Serial.println(stateString);
+            vTaskDelay(500 / portTICK_PERIOD_MS);
+            digitalWrite(LUMINB, LOW);
+        }
 
         vTaskDelay(100 / portTICK_PERIOD_MS);
     }

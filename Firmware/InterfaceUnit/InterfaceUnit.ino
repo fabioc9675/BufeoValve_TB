@@ -16,6 +16,7 @@
 #include "LiquidCrystal_I2C.h"
 #include "initializer.h"
 #include "lcdConfig.h"
+#include "timer.h"
 
 /** ****************************************************************************
  ** ************ DEFINES *******************************************************
@@ -46,11 +47,11 @@ uint8_t taskCoreOne = 1;
 // manejadores para los semaforos binarios
 SemaphoreHandle_t xSemaphoreTimer = NULL;
 
+// banderas de botones de usuario
+volatile uint8_t flagActionInterrupt = false; // inicia en modo standby
+
 // bandera de activacion de timer
 volatile uint8_t flagTimerInterrupt = false;
-
-// banderas de botones de usuario
-volatile uint8_t flagStandbyInterrupt = true; // inicia en modo standby
 
 // banderas de cambio de valores
 volatile uint8_t flagTest = false;
@@ -64,6 +65,7 @@ float corriente = 0;
 
 // Variable de la maquina de estados
 byte stateMachine = MAIN_MENU;
+String stateString = "Main Menu";
 
 // Variables para el manejo de los mensajes en pantalla
 volatile uint8_t flagAlreadyPrint = false;
@@ -92,12 +94,12 @@ void setup()
 
 	// se crea el semaforo binario
 	xSemaphoreTimer = xSemaphoreCreateBinary();
-	// init_Timer();
+	init_Timer();
 
 	// creo la tarea task_pulsador
-	xTaskCreatePinnedToCore(task_Prueba, "task_Prueba", 2048, NULL, 1, NULL, taskCoreOne);
+	// xTaskCreatePinnedToCore(task_Prueba, "task_Prueba", 2048, NULL, 1, NULL, taskCoreOne);
 
-	// xTaskCreatePinnedToCore(task_timer, "task_timer", 2048, NULL, 2, NULL, taskCoreOne);
+	xTaskCreatePinnedToCore(task_timer, "task_timer", 2048, NULL, 2, NULL, taskCoreOne);
 	xTaskCreatePinnedToCore(task_display, "task_display", 2048, NULL, 3, NULL, taskCoreOne); // se puede colocar en el core cero
 	// xTaskCreatePinnedToCore(task_Receive, "task_Receive", 2048, NULL, 1, NULL, taskCoreOne);
 
