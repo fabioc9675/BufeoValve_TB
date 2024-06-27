@@ -282,6 +282,8 @@ void stabilityInterruptAttention(void)
             portEXIT_CRITICAL(&mux);
             contStability = 0;
 
+            debugText("Interrupcion Stability");
+
             // switch (currentVentilationMode)
             // {
             // case 0:
@@ -356,7 +358,7 @@ void stabilityInterruptAttention(void)
                 portEXIT_CRITICAL_ISR(&mux);
                 // lineaAnterior = MODE_CHANGE;
                 sendSerialData();
-                // Serial.println("I am on Standby state");
+                debugText("I am on Standby state");
             }
         }
     }

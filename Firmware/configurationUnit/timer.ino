@@ -113,6 +113,7 @@ void task_timer(void *arg)
                 //     break;
                 case STANDBY_STATE:
                     // alertMonitoring();
+                    debugText("Timer standby state");
                     stabilityInterruptAttention();
                     break;
                 // case PCMV_STATE:
@@ -133,7 +134,7 @@ void task_timer(void *arg)
                 contms++;
                 if (contms % 25 == 0)
                 {
-                    // digitalWrite(LED, !digitalRead(LED));
+                    digitalWrite(LUMINR, !digitalRead(LUMINR));
                 }
                 if (contms == 1000)
                 {
@@ -208,7 +209,7 @@ void task_timer(void *arg)
                     contStability++;
                     if (contStability > 400)
                     {
-                        // Serial.println("Estabilidad");
+                        debugText("Estabilidad");
                         contStability = 0;
                         sendSerialData();
                         portENTER_CRITICAL(&timerMux);

@@ -126,7 +126,14 @@ void sendSerialData(void)
                         String(PeepMax) + ',' + String(maxFR) + ',' + String(maxVE) + ',' +
                         String(apneaTime) + ';';
     Serial2.print(dataToSend);
-    // Serial.println(stateMachine);
+    Serial.println(dataToSend);
+    Serial.println(stateMachine);
+}
+
+// envio de datos por serial para Debug
+void debugText(String msg)
+{
+    Serial.println(msg);
 }
 
 /* ***************************************************************************
