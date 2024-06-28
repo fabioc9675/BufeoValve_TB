@@ -45,8 +45,9 @@ extern "C"
 #define RXD2 16
 #define TXD2 17
 
-#define AUX_RXD 23
-#define AUX_TXD 25
+// #define AUX_RXD 23
+// #define AUX_TXD 25
+#define CURR_DETEC 25
 
 // Definiciones de la maquina de estados
 #define MAIN_MENU 0 // Definicion de main menu

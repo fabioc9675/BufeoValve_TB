@@ -78,7 +78,7 @@ void task_display(void *pvParameters)
     lcd.setCursor(0, 1);
     lcd.print("SEAL:     |CUR:     ");
     lcd.setCursor(0, 2);
-    lcd.print("PRES:     |RES:     ");
+    lcd.print("PRES:     |         ");
     lcd.setCursor(0, 3);
     lcd.print("PRUEBA:             ");
 

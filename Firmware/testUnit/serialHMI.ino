@@ -181,7 +181,7 @@ void task_sendSerialData(void *arg)
             for (int i = 0; i < 40; i++)
             {
                 adcADQ[i] = analogRead(ADC_PRESS_1);
-                Serial.println(adcADQ[i]);
+                // Serial.println(adcADQ[i]);
                 vTaskDelay(50);
             }
             adcMean = 0;
@@ -190,7 +190,7 @@ void task_sendSerialData(void *arg)
                 adcMean += adcADQ[i];
             }
             adcMean /= 40;
-            Serial.print("Promedio Estanquedad= ");
+            Serial.print("Umbral Estanquedad = 1000, Promedio Estanquedad = ");
             Serial.println(adcMean);
 
             // Proceso de comparacion, falla o exito
@@ -225,7 +225,7 @@ void task_sendSerialData(void *arg)
             for (int i = 0; i < 40; i++)
             {
                 adcADQ[i] = analogRead(ADC_PRESS_1);
-                Serial.println(adcADQ[i]);
+                // Serial.println(adcADQ[i]);
                 vTaskDelay(50);
             }
             adcMean = 0;
@@ -234,7 +234,7 @@ void task_sendSerialData(void *arg)
                 adcMean += adcADQ[i];
             }
             adcMean /= 40;
-            Serial.print("Promedio Corriente= ");
+            Serial.print("Umbral No Presion = 1000, Promedio Presion = ");
             Serial.println(adcMean);
 
             // Proceso de comparacion, falla o exito
@@ -266,30 +266,18 @@ void task_sendSerialData(void *arg)
             vTaskDelay(1000 / portTICK_PERIOD_MS);
             // Inicio de prueba
             digitalWrite(EV_ESPIRA, HIGH);
+
+            corri_test = FAIL_TEST;
             for (int i = 0; i < 40; i++)
             {
-                adcADQ[i] = analogRead(ADC_PRESS_1);
-                Serial.println(adcADQ[i]);
+                if (digitalRead(CURR_DETEC) == HIGH)
+                {
+                    corri_test = PASS_TEST;
+                }
                 vTaskDelay(50);
             }
-            adcMean = 0;
-            for (int i = 0; i < 40; i++)
-            {
-                adcMean += adcADQ[i];
-            }
-            adcMean /= 40;
-            Serial.print("Promedio Presion= ");
-            Serial.println(adcMean);
-
-            // Proceso de comparacion, falla o exito
-            if (adcMean <= 1000)
-            {
-                corri_test = PASS_TEST;
-            }
-            else
-            {
-                corri_test = FAIL_TEST;
-            }
+            Serial.print("Umbral Corriente = 0.5, Promedio Corriente = ");
+            Serial.println(corri_test);
 
             newStateMachine = IDLE_TEST;
 

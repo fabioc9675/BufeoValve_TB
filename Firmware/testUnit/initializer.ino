@@ -38,6 +38,8 @@ void init_GPIO(void)
     pinMode(EV_AUX4, OUTPUT);    // PIN 3   velocidad
     pinMode(EV_AUX5, OUTPUT);    // PIN 6   velocidad
 
+    pinMode(CURR_DETEC, INPUT); // PIN 6   velocidad
+
     // Inicializacion de los pines de ADC para conversion Analogo-digitalPinToInterrupt
     adcAttachPin(ADC_PRESS_1);
     adcAttachPin(ADC_PRESS_2);
