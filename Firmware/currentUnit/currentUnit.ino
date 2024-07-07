@@ -51,7 +51,7 @@ void setup()
 
     // adjust scaling on an individual channel basis
     ch0->minScale = 0;
-    ch0->maxScale = 4095;
+    ch0->maxScale = 16383;
     ch1->minScale = 0;
     ch1->maxScale = 16383;
     ch2->minScale = 0;
@@ -79,7 +79,7 @@ void loop()
     // Serial.print("\n ch0: ");
     // Serial.print(ch0->value(), DEC);
     Serial.print("\n");
-    Serial.print(ch2->value(), DEC);
+    Serial.print(ch0->value(), DEC);
     // Serial.print("\n ch2: ");
     // Serial.print(ch2->value(), DEC);
     // Serial.print("\n ch3: ");
@@ -94,9 +94,9 @@ void loop()
     // Serial.print(ch7->value(), DEC);
     // Serial.print("\n- - - - - - - - - - - - - - - - - - - - \n");
 
-    canal = ch2->value();
+    canal = ch0->value();
 
-    if (canal > 3450)
+    if (canal > 3750)
     {
         digitalWrite(SIGNAL, 1);
     }

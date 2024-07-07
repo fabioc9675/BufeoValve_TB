@@ -28,11 +28,11 @@ extern "C"
 #define VERSION_1_2 TRUE
 
 // Definiciones para controlar el shiel DFRobot quad motor driver
-#define EV_ESC_CAM 18 // out 1 // Valvula 3/2 de activacion de la camara
-#define EV_INSPIRA 5  // out 2 // Valvula 3/2 de control de la via inspiratoria
-#define EV_ESPIRA 4   // out 3 // Valvula 3/2 de control de presiones PCON y PEEP
-#define EV_AUX4 12    // out 3 // Valvula 3/2 de control de presiones PCON y PEEP
-#define EV_AUX5 13    // out 3 // Valvula 3/2 de control de presiones PCON y PEEP
+#define EV_ESC_CAM 4 // out 1 // Valvula 3/2 de activacion de la camara
+#define EV_INSPIRA 5 // out 2 // Valvula 3/2 de control de la via inspiratoria
+#define EV_ESPIRA 18 // out 3 // Valvula 3/2 de control de presiones PCON y PEEP
+#define EV_AUX4 12   // out 3 // Valvula 3/2 de control de presiones PCON y PEEP
+#define EV_AUX5 13   // out 3 // Valvula 3/2 de control de presiones PCON y PEEP
 
 // Definiciones para el manejo del ADC
 #define ADC_PRESS_1 27 // Sensor de presion para la camara

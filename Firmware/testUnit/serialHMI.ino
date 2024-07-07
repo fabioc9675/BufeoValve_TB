@@ -13,6 +13,7 @@
 /** ****************************************************************************
  ** ************ DEFINES *******************************************************
  ** ****************************************************************************/
+#define VECT_SIZE 80
 
 /** ****************************************************************************
  ** ************ EXTERN VARIABLES **********************************************
@@ -42,7 +43,7 @@ int new_corri_test;
 extern int newStateMachine;
 extern int currentStateMachine;
 
-float adcADQ[40];
+float adcADQ[VECT_SIZE];
 float adcMean = 0;
 
 /** ****************************************************************************
@@ -178,23 +179,23 @@ void task_sendSerialData(void *arg)
             vTaskDelay(1000 / portTICK_PERIOD_MS);
             // Inicio de prueba
             digitalWrite(EV_INSPIRA, HIGH);
-            for (int i = 0; i < 40; i++)
+            for (int i = 0; i < VECT_SIZE; i++)
             {
                 adcADQ[i] = analogRead(ADC_PRESS_1);
-                // Serial.println(adcADQ[i]);
+                Serial.println(adcADQ[i]);
                 vTaskDelay(50);
             }
             adcMean = 0;
-            for (int i = 0; i < 40; i++)
+            for (int i = 0; i < VECT_SIZE; i++)
             {
                 adcMean += adcADQ[i];
             }
-            adcMean /= 40;
-            Serial.print("Umbral Estanquedad = 1000, Promedio Estanquedad = ");
+            adcMean /= VECT_SIZE;
+            Serial.print("Umbral Estanquedad = 3500, Promedio Estanquedad = ");
             Serial.println(adcMean);
 
             // Proceso de comparacion, falla o exito
-            if (adcMean <= 1000)
+            if (adcMean <= 3500)
             {
                 estan_test = FAIL_TEST;
             }
@@ -206,6 +207,8 @@ void task_sendSerialData(void *arg)
             newStateMachine = IDLE_TEST;
 
             digitalWrite(EV_INSPIRA, LOW);
+
+            // vTaskDelay(2000 / portTICK_PERIOD_MS);
 
             String dataToSend = String(estanquedad) + ',' + String(presion) + ',' + String(corriente) + ',' +
                                 String(estan_test) + ',' + String(presi_test) + ',' + String(corri_test) + ';';
@@ -222,23 +225,23 @@ void task_sendSerialData(void *arg)
             // Inicio de prueba
             digitalWrite(EV_ESPIRA, HIGH);
             digitalWrite(EV_INSPIRA, HIGH);
-            for (int i = 0; i < 40; i++)
+            for (int i = 0; i < VECT_SIZE; i++)
             {
                 adcADQ[i] = analogRead(ADC_PRESS_1);
-                // Serial.println(adcADQ[i]);
+                Serial.println(adcADQ[i]);
                 vTaskDelay(50);
             }
             adcMean = 0;
-            for (int i = 0; i < 40; i++)
+            for (int i = 0; i < VECT_SIZE; i++)
             {
                 adcMean += adcADQ[i];
             }
-            adcMean /= 40;
-            Serial.print("Umbral No Presion = 1000, Promedio Presion = ");
+            adcMean /= VECT_SIZE;
+            Serial.print("Umbral No Presion = 3500, Promedio Presion = ");
             Serial.println(adcMean);
 
             // Proceso de comparacion, falla o exito
-            if (adcMean <= 1000)
+            if (adcMean <= 3500)
             {
                 presi_test = PASS_TEST;
             }
@@ -251,6 +254,8 @@ void task_sendSerialData(void *arg)
 
             digitalWrite(EV_ESPIRA, LOW);
             digitalWrite(EV_INSPIRA, LOW);
+
+            // vTaskDelay(2000 / portTICK_PERIOD_MS);
 
             String dataToSend = String(estanquedad) + ',' + String(presion) + ',' + String(corriente) + ',' +
                                 String(estan_test) + ',' + String(presi_test) + ',' + String(corri_test) + ';';
@@ -268,7 +273,7 @@ void task_sendSerialData(void *arg)
             digitalWrite(EV_ESPIRA, HIGH);
 
             corri_test = FAIL_TEST;
-            for (int i = 0; i < 40; i++)
+            for (int i = 0; i < VECT_SIZE; i++)
             {
                 if (digitalRead(CURR_DETEC) == HIGH)
                 {
@@ -282,6 +287,8 @@ void task_sendSerialData(void *arg)
             newStateMachine = IDLE_TEST;
 
             digitalWrite(EV_ESPIRA, LOW);
+
+            vTaskDelay(2000 / portTICK_PERIOD_MS);
 
             String dataToSend = String(estanquedad) + ',' + String(presion) + ',' + String(corriente) + ',' +
                                 String(estan_test) + ',' + String(presi_test) + ',' + String(corri_test) + ';';
