@@ -186,16 +186,16 @@ void task_sendSerialData(void *arg)
                 vTaskDelay(50);
             }
             adcMean = 0;
-            for (int i = 0; i < VECT_SIZE; i++)
+            for (int i = 25; i < VECT_SIZE; i++)
             {
                 adcMean += adcADQ[i];
             }
-            adcMean /= VECT_SIZE;
-            Serial.print("Umbral Estanquedad = 3500, Promedio Estanquedad = ");
+            adcMean /= VECT_SIZE - 25;
+            Serial.print("Umbral Estanquedad = 2270, Promedio Estanquedad = ");
             Serial.println(adcMean);
 
             // Proceso de comparacion, falla o exito
-            if (adcMean <= 3500)
+            if (adcMean <= 2270)
             {
                 estan_test = FAIL_TEST;
             }
@@ -232,16 +232,16 @@ void task_sendSerialData(void *arg)
                 vTaskDelay(50);
             }
             adcMean = 0;
-            for (int i = 0; i < VECT_SIZE; i++)
+            for (int i = 15; i < VECT_SIZE; i++)
             {
                 adcMean += adcADQ[i];
             }
-            adcMean /= VECT_SIZE;
-            Serial.print("Umbral No Presion = 3500, Promedio Presion = ");
+            adcMean /= VECT_SIZE - 15;
+            Serial.print("Umbral No Presion = 2000, Promedio Presion = ");
             Serial.println(adcMean);
 
             // Proceso de comparacion, falla o exito
-            if (adcMean <= 3500)
+            if (adcMean <= 2000)
             {
                 presi_test = PASS_TEST;
             }
